@@ -3,213 +3,309 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yusuf Akdeniz | Executive Hair Palace</title>
+    <title>Yusuf Akdeniz Executive | Hair Palace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-        :root { --accent: #db2777; --bg: #020617; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #f8fafc; }
-        .executive-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; }
-        .tab-active { color: var(--accent); border-bottom: 3px solid var(--accent); }
-        .income-col { background: rgba(34, 197, 94, 0.03); border: 1px solid rgba(34, 197, 94, 0.1); }
-        .expense-col { background: rgba(239, 68, 68, 0.03); border: 1px solid rgba(239, 68, 68, 0.1); }
-        input, select, textarea { background: rgba(0,0,0,0.4) !important; border: 1px solid #1e293b !important; border-radius: 0.75rem !important; color: white !important; }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        :root { --p-pink: #ff2d55; --p-dark: #0a0a0c; --p-card: #151518; }
+        body { font-family: 'Outfit', sans-serif; background: var(--p-dark); color: #e1e1e1; overflow-x: hidden; }
+        
+        /* Premium Kart Tasarımları */
+        .premium-card { background: var(--p-card); border: 1px solid rgba(255,255,255,0.03); border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .glass-header { background: rgba(10, 10, 12, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        /* Animasyonlar */
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Sütun Düzenleri */
+        .income-pill { border-left: 4px solid #00f2fe; background: linear-gradient(90deg, rgba(0,242,254,0.05) 0%, transparent 100%); }
+        .expense-pill { border-left: 4px solid #ff2d55; background: linear-gradient(90deg, rgba(255,45,85,0.05) 0%, transparent 100%); }
+        
+        /* Özel Inputlar */
+        input, select, textarea { 
+            background: #1c1c21 !important; border: 1px solid #2d2d35 !important; 
+            border-radius: 12px !important; color: white !important; padding: 12px !important;
+            transition: all 0.3s;
+        }
+        input:focus { border-color: var(--p-pink) !important; outline: none; box-shadow: 0 0 10px rgba(255,45,85,0.2); }
+        
+        .tab-btn.active { color: var(--p-pink); border-bottom: 2px solid var(--p-pink); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="pb-24">
+<body class="pb-28">
 
-    <div id="login" class="fixed inset-0 bg-black z-[999] flex flex-col items-center justify-center p-8">
-        <h1 class="text-3xl font-black italic text-pink-600 mb-10 tracking-widest uppercase">YUSUF AKDENİZ</h1>
+    <div id="loginPage" class="fixed inset-0 bg-black z-[1000] flex flex-col items-center justify-center p-10">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-extrabold tracking-tighter italic text-white uppercase">YUSUF AKDENİZ</h1>
+            <p class="text-pink-600 font-bold tracking-[0.3em] text-[10px] mt-2">EXECUTIVE DASHBOARD</p>
+        </div>
         <div class="w-full max-w-sm space-y-4">
-            <input id="u" type="text" placeholder="Yönetici Adı" class="w-full p-4 outline-none">
-            <input id="p" type="password" placeholder="Şifre" class="w-full p-4 outline-none">
-            <button onclick="auth()" class="w-full bg-pink-600 p-4 rounded-xl font-bold uppercase tracking-widest active:scale-95">Sistemi Başlat</button>
+            <div class="relative">
+                <i class="fas fa-user absolute left-4 top-4 text-gray-600"></i>
+                <input id="user" type="text" placeholder="Yönetici Kimliği" class="w-full pl-12">
+            </div>
+            <div class="relative">
+                <i class="fas fa-lock absolute left-4 top-4 text-gray-600"></i>
+                <input id="pass" type="password" placeholder="Şifre" class="w-full pl-12">
+            </div>
+            <button onclick="login()" class="w-full bg-pink-600 hover:bg-pink-700 text-white p-4 rounded-xl font-bold uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-pink-600/20">Sistemi Aç</button>
         </div>
     </div>
 
-    <div id="panel" class="hidden">
-        <header class="p-6 flex justify-between items-center border-b border-white/5 sticky top-0 bg-slate-950/80 backdrop-blur-xl z-50">
+    <div id="app" class="hidden">
+        <header class="glass-header sticky top-0 z-[100] px-6 py-5 flex justify-between items-center">
             <div>
-                <h2 class="text-xl font-black tracking-tighter italic">HAIR PALACE</h2>
-                <p class="text-[10px] text-pink-500 font-bold uppercase tracking-widest">Executive Dashboard</p>
+                <h2 class="text-lg font-black italic tracking-tighter uppercase leading-none">Hair Palace</h2>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Sistem Aktif</span>
+                </div>
             </div>
-            <button onclick="location.reload()" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800"><i class="fas fa-power-off text-red-500"></i></button>
+            <div class="flex gap-4">
+                <button onclick="exportData()" class="text-gray-400"><i class="fas fa-download"></i></button>
+                <button onclick="location.reload()" class="w-10 h-10 rounded-full bg-pink-600/10 flex items-center justify-center border border-pink-600/20 text-pink-600">
+                    <i class="fas fa-power-off"></i>
+                </button>
+            </div>
         </header>
 
-        <div class="p-4 grid grid-cols-2 gap-3">
-            <div class="executive-card p-4 border-l-4 border-green-500">
-                <p class="text-[10px] font-bold text-slate-500 uppercase">Toplam Gelir</p>
-                <p id="sumGelir" class="text-xl font-black text-green-400">0 TL</p>
+        <div class="p-4 grid grid-cols-2 gap-4">
+            <div class="premium-card p-5 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-3 opacity-10"><i class="fas fa-wallet text-3xl"></i></div>
+                <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Anlık Kasa (Net)</p>
+                <h3 id="netKasa" class="text-2xl font-black text-white">0 TL</h3>
             </div>
-            <div class="executive-card p-4 border-l-4 border-red-500">
-                <p class="text-[10px] font-bold text-slate-500 uppercase">Toplam Gider</p>
-                <p id="sumGider" class="text-xl font-black text-red-400">0 TL</p>
-            </div>
-        </div>
-
-        <div class="flex overflow-x-auto border-b border-white/5 no-scrollbar">
-            <button onclick="setTab('r')" id="tr" class="px-6 py-4 text-xs font-black whitespace-nowrap tab-active">RANDEVULAR</button>
-            <button onclick="setTab('k')" id="tk" class="px-6 py-4 text-xs font-black whitespace-nowrap text-slate-500">KASA & SÜTUN</button>
-            <button onclick="setTab('c')" id="tc" class="px-6 py-4 text-xs font-black whitespace-nowrap text-slate-500">ÇALIŞANLAR</button>
-            <button onclick="setTab('a')" id="ta" class="px-6 py-4 text-xs font-black whitespace-nowrap text-slate-500">BOYA ARŞİVİ</button>
-        </div>
-
-        <div id="tab-r" class="view p-4 space-y-6">
-            <div class="executive-card p-5 space-y-4">
-                <h3 class="text-xs font-black text-pink-500 uppercase italic">Yeni Randevu Kaydı</h3>
-                <input id="rn" type="text" placeholder="Müşteri Adı Soyadı" class="w-full p-3 outline-none">
-                <div class="flex gap-2">
-                    <input id="rs" type="time" class="w-1/2 p-3">
-                    <input id="rt" type="date" class="w-1/2 p-3">
-                </div>
-                <button onclick="addR()" class="w-full bg-pink-600 p-3 rounded-xl font-black text-xs">TAKİME EKLE</button>
-            </div>
-            <div class="space-y-6">
-                <div class="border-l-2 border-pink-500 pl-3"><h4 class="text-xs font-black uppercase text-slate-400">Bugünün Randevuları</h4></div>
-                <div id="listBugun" class="space-y-3 text-sm"></div>
-                <div class="border-l-2 border-blue-500 pl-3"><h4 class="text-xs font-black uppercase text-slate-400">Gelecek Randevular</h4></div>
-                <div id="listGelecek" class="space-y-3 text-sm"></div>
+            <div class="premium-card p-5 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-3 opacity-10"><i class="fas fa-users text-3xl"></i></div>
+                <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Bugün Randevu</p>
+                <h3 id="bugunAdet" class="text-2xl font-black text-white text-pink-500">0</h3>
             </div>
         </div>
 
-        <div id="tab-k" class="view hidden p-4">
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                <div class="income-col p-3 rounded-2xl min-h-[300px]">
-                    <h5 class="text-[10px] font-black text-green-500 text-center mb-3 uppercase border-b border-green-500/20 pb-2">Gelirler (+)</h5>
-                    <div id="colGelir" class="space-y-2 text-[11px]"></div>
-                </div>
-                <div class="expense-col p-3 rounded-2xl min-h-[300px]">
-                    <h5 class="text-[10px] font-black text-red-500 text-center mb-3 uppercase border-b border-red-500/20 pb-2">Giderler (-)</h5>
-                    <div id="colGider" class="space-y-2 text-[11px]"></div>
+        <div class="px-4 flex gap-6 border-b border-white/5 overflow-x-auto no-scrollbar mb-6 bg-black/20">
+            <button onclick="switchTab('r')" id="btn-r" class="tab-btn active py-4 text-xs font-black uppercase whitespace-nowrap">Randevular</button>
+            <button onclick="switchTab('k')" id="btn-k" class="tab-btn py-4 text-xs font-black uppercase whitespace-nowrap text-gray-500">Kasa & Sütunlar</button>
+            <button onclick="switchTab('c')" id="btn-c" class="tab-btn py-4 text-xs font-black uppercase whitespace-nowrap text-gray-500">Personel Paneli</button>
+            <button onclick="switchTab('a')" id="btn-a" class="tab-btn py-4 text-xs font-black uppercase whitespace-nowrap text-gray-500">Müşteri Arşivi</button>
+        </div>
+
+        <div id="tab-r" class="view p-4 fade-in">
+            <div class="premium-card p-6 mb-8">
+                <h4 class="text-xs font-black text-pink-500 uppercase mb-4 tracking-tighter italic">Yeni Randevu Kaydı</h4>
+                <div class="space-y-4">
+                    <input id="r-isim" type="text" placeholder="Müşteri Adı Soyadı" class="w-full">
+                    <div class="flex gap-3">
+                        <input id="r-saat" type="time" class="w-1/2">
+                        <input id="r-tarih" type="date" class="w-1/2">
+                    </div>
+                    <button onclick="addRandevu()" class="w-full bg-white text-black font-black p-4 rounded-xl uppercase text-xs tracking-widest shadow-xl">Listeye Ekle</button>
                 </div>
             </div>
-            <div class="executive-card p-5 space-y-3">
-                <input id="kn" type="text" placeholder="İşlem veya Harcama Adı" class="w-full p-3">
-                <div class="flex gap-2">
-                    <select id="kt" class="w-1/2 p-3">
-                        <option value="gelir">GELİR (+)</option>
-                        <option value="gider">GİDER (-)</option>
-                    </select>
-                    <input id="kf" type="number" placeholder="Tutar" class="w-1/4 p-3 font-bold">
-                    <select id="kd" class="w-1/4 p-3">
-                        <option value="TL">TL</option>
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="AU">ALTIN</option>
-                    </select>
+
+            <div class="space-y-8">
+                <div>
+                    <h5 class="text-[11px] font-black text-white/40 uppercase mb-4 flex items-center gap-2">
+                        <span class="w-8 h-[1px] bg-pink-600"></span> Bugünün Ajandası
+                    </h5>
+                    <div id="bugunList" class="space-y-3"></div>
                 </div>
-                <textarea id="km" placeholder="Boya Formülü veya Not..." class="w-full p-3 h-20 text-xs"></textarea>
-                <button onclick="addK()" class="w-full bg-slate-50 text-black p-3 rounded-xl font-black text-xs uppercase">İŞLEMİ KAYDET</button>
+                <div>
+                    <h5 class="text-[11px] font-black text-white/40 uppercase mb-4 flex items-center gap-2">
+                        <span class="w-8 h-[1px] bg-blue-600"></span> Gelecek Randevular
+                    </h5>
+                    <div id="gelecekList" class="space-y-3"></div>
+                </div>
             </div>
         </div>
 
-        <div id="tab-c" class="view hidden p-4 space-y-4">
-            <div class="executive-card p-5">
-                <h3 class="text-xs font-black text-pink-500 uppercase mb-4 italic">Personel Maaş & Avans</h3>
-                <div class="grid gap-3">
-                    <input id="cn" type="text" placeholder="Çalışan İsmi" class="w-full p-3">
+        <div id="tab-k" class="view hidden p-4 fade-in">
+            <div class="grid grid-cols-2 gap-4 mb-8 h-[400px]">
+                <div class="premium-card p-4 overflow-y-auto no-scrollbar">
+                    <p class="text-center text-[10px] font-black text-cyan-400 mb-4 uppercase border-b border-cyan-400/20 pb-2">Gelirler (+)</p>
+                    <div id="gelirSutun" class="space-y-2"></div>
+                </div>
+                <div class="premium-card p-4 overflow-y-auto no-scrollbar">
+                    <p class="text-center text-[10px] font-black text-pink-500 mb-4 uppercase border-b border-pink-500/20 pb-2">Giderler (-)</p>
+                    <div id="giderSutun" class="space-y-2"></div>
+                </div>
+            </div>
+
+            <div class="premium-card p-6">
+                <h4 class="text-xs font-black text-white uppercase mb-4 italic">İşlem & Harcama Girişi</h4>
+                <div class="space-y-3">
+                    <input id="k-aciklama" type="text" placeholder="İşlem Adı (Örn: Ombre)" class="w-full">
                     <div class="flex gap-2">
-                        <input id="cm" type="number" placeholder="Maaş / Ödeme" class="w-1/2 p-3">
-                        <select id="ct" class="w-1/2 p-3">
+                        <select id="k-tur" class="w-1/2">
+                            <option value="gelir">Gelir (+)</option>
+                            <option value="gider">Gider (-)</option>
+                        </select>
+                        <input id="k-tutar" type="number" placeholder="Tutar" class="w-1/4">
+                        <select id="k-birim" class="w-1/4">
+                            <option value="TL">TL</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="ALTIN">AU</option>
+                        </select>
+                    </div>
+                    <textarea id="k-not" placeholder="Boya numaraları veya işlem notu..." class="w-full h-24"></textarea>
+                    <button onclick="addKasa()" class="w-full bg-pink-600 text-white font-black p-4 rounded-xl uppercase text-xs">Sisteme İşle</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-c" class="view hidden p-4 fade-in">
+            <div class="premium-card p-6 mb-6">
+                <h4 class="text-xs font-black text-pink-500 uppercase mb-4 italic">Maaş & Avans Takibi</h4>
+                <div class="space-y-3">
+                    <input id="c-isim" type="text" placeholder="Personel İsmi" class="w-full">
+                    <div class="flex gap-2">
+                        <input id="c-tutar" type="number" placeholder="Miktar" class="w-1/2">
+                        <select id="c-tur" class="w-1/2">
                             <option value="Maaş">Maaş Ödemesi</option>
                             <option value="Avans">Avans</option>
                         </select>
                     </div>
-                    <button onclick="addC()" class="w-full bg-pink-700 p-3 rounded-xl font-black text-xs">PERSONEL KAYDINA İŞLE</button>
+                    <button onclick="addPersonel()" class="w-full bg-white text-black font-black p-4 rounded-xl uppercase text-xs">Ödemeyi Kaydet</button>
                 </div>
             </div>
-            <div id="listCalisan" class="space-y-3"></div>
+            <div id="personelList" class="space-y-3"></div>
         </div>
 
-        <div id="tab-a" class="view hidden p-4">
-            <input onkeyup="search()" id="src" type="text" placeholder="Müşteri adına göre boya ara..." class="w-full p-4 rounded-2xl mb-4">
-            <div id="listArsiv" class="space-y-4"></div>
+        <div id="tab-a" class="view hidden p-4 fade-in">
+            <div class="relative mb-6">
+                <i class="fas fa-search absolute left-4 top-4 text-gray-500"></i>
+                <input onkeyup="searchArsiv()" id="arsivSearch" type="text" placeholder="Müşteri adına veya boya no'ya göre ara..." class="w-full pl-12">
+            </div>
+            <div id="arsivList" class="space-y-4"></div>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('YAH_PRO_DB')) || { r: [], k: [], c: [] };
-        const rates = { TL: 1, USD: 33, EUR: 36, AU: 2600 };
-        const today = new Date().toISOString().split('T')[0];
+        // Veritabanı ve Sabitler
+        let db = JSON.parse(localStorage.getItem('YAH_PRO_EXECUTIVE')) || { randevular: [], kasa: [], personel: [] };
+        const kurlar = { TL: 1, USD: 33.5, EUR: 36.2, ALTIN: 2850 };
+        const bugunTarih = new Date().toISOString().split('T')[0];
 
-        function auth() {
-            if(document.getElementById('u').value === 'admin' && document.getElementById('p').value === '1234') {
-                document.getElementById('login').style.display = 'none';
-                document.getElementById('panel').classList.remove('hidden');
-                render();
-            } else alert('Sistem Reddedildi!');
+        // Giriş Kontrol
+        function login() {
+            if(document.getElementById('user').value === 'admin' && document.getElementById('pass').value === '1234') {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('app').classList.remove('hidden');
+                refresh();
+            } else {
+                alert("YETKİSİZ ERİŞİM: Bilgileri kontrol edin.");
+            }
         }
 
-        function setTab(t) {
+        // Tab Değiştirme
+        function switchTab(tab) {
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-            document.querySelectorAll('button[id^="t"]').forEach(b => b.classList.remove('tab-active', 'text-pink-500'));
-            document.getElementById('tab-'+t).classList.remove('hidden');
-            document.getElementById('t'+t).classList.add('tab-active', 'text-pink-500');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active', 'text-pink-500'));
+            document.getElementById('tab-'+tab).classList.remove('hidden');
+            document.getElementById('btn-'+tab).classList.add('active', 'text-pink-500');
         }
 
-        function addR() {
-            const n = document.getElementById('rn').value, s = document.getElementById('rs').value, t = document.getElementById('rt').value || today;
-            if(!n || !s) return;
-            db.r.push({ id: Date.now(), n, s, t });
-            save(); document.getElementById('rn').value = "";
+        // Randevu İşlemleri
+        function addRandevu() {
+            const isim = document.getElementById('r-isim').value;
+            const saat = document.getElementById('r-saat').value;
+            const tarih = document.getElementById('r-tarih').value || bugunTarih;
+            if(!isim || !saat) return alert("İsim ve saat boş bırakılamaz!");
+            
+            db.randevular.push({ id: Date.now(), isim, saat, tarih });
+            save();
+            document.getElementById('r-isim').value = "";
         }
 
-        function addK() {
-            const n = document.getElementById('kn').value, f = Number(document.getElementById('kf').value), t = document.getElementById('kt').value;
-            const d = document.getElementById('kd').value, m = document.getElementById('km').value;
-            if(!n || !f) return;
-            const tlVal = f * rates[d];
-            db.k.unshift({ id: Date.now(), n, f, d, t, m, tl: tlVal, dt: new Date().toLocaleDateString('tr-TR') });
-            save(); document.getElementById('kn').value = ""; document.getElementById('kf').value = "";
+        // Kasa İşlemleri
+        function addKasa() {
+            const acik = document.getElementById('k-aciklama').value;
+            const tutar = Number(document.getElementById('k-tutar').value);
+            const tur = document.getElementById('k-tur').value;
+            const birim = document.getElementById('k-birim').value;
+            const not = document.getElementById('k-not').value;
+            
+            if(!acik || !tutar) return alert("Açıklama ve tutar girin!");
+            
+            const tlKarsiligi = tutar * kurlar[birim];
+            db.kasa.unshift({ id: Date.now(), acik, tutar, birim, tur, not, tl: tlKarsiligi, tarih: new Date().toLocaleDateString('tr-TR') });
+            save();
+            document.getElementById('k-aciklama').value = ""; document.getElementById('k-tutar').value = "";
         }
 
-        function addC() {
-            const n = document.getElementById('cn').value, m = Number(document.getElementById('cm').value), t = document.getElementById('ct').value;
-            if(!n || !m) return;
-            db.c.unshift({ id: Date.now(), n, m, t, dt: new Date().toLocaleDateString('tr-TR') });
-            save(); document.getElementById('cn').value = ""; document.getElementById('cm').value = "";
+        // Personel İşlemleri
+        function addPersonel() {
+            const isim = document.getElementById('c-isim').value;
+            const tutar = Number(document.getElementById('c-tutar').value);
+            const tur = document.getElementById('c-tur').value;
+            if(!isim || !tutar) return;
+            
+            db.personel.unshift({ id: Date.now(), isim, tutar, tur, tarih: new Date().toLocaleDateString('tr-TR') });
+            save();
+            document.getElementById('c-isim').value = ""; document.getElementById('c-tutar').value = "";
         }
 
-        function render() {
-            const bl = document.getElementById('listBugun'), gl = document.getElementById('listGelecek'), cg = document.getElementById('colGelir'), cd = document.getElementById('colGider'), cl = document.getElementById('listCalisan'), al = document.getElementById('listArsiv');
-            bl.innerHTML = ""; gl.innerHTML = ""; cg.innerHTML = ""; cd.innerHTML = ""; cl.innerHTML = ""; al.innerHTML = "";
-            let sGelir = 0, sGider = 0;
+        // Sistemi Güncelle
+        function refresh() {
+            const bl = document.getElementById('bugunList'), gl = document.getElementById('gelecekList');
+            const gs = document.getElementById('gelirSutun'), ds = document.getElementById('giderSutun');
+            const pl = document.getElementById('personelList'), al = document.getElementById('arsivList');
+            
+            bl.innerHTML = ""; gl.innerHTML = ""; gs.innerHTML = ""; ds.innerHTML = ""; pl.innerHTML = ""; al.innerHTML = "";
+            let toplamGelir = 0, toplamGider = 0, bAdet = 0;
 
-            db.r.sort((a,b)=>a.s.localeCompare(b.s)).forEach(x => {
-                let h = `<div class="executive-card p-4 flex justify-between items-center animate-in slide-in-from-right duration-500">
-                    <div><p class="font-bold">${x.n}</p><p class="text-[10px] text-pink-500 font-black">${x.s}</p></div>
-                    <button onclick="del('r',${x.id})" class="w-8 h-8 rounded-full bg-red-500/10 text-red-500 text-[10px]"><i class="fas fa-trash"></i></button>
+            // Randevular
+            db.randevular.sort((a,b)=>a.saat.localeCompare(b.saat)).forEach(r => {
+                let html = `<div class="premium-card p-4 flex justify-between items-center border-l-4 border-pink-600">
+                    <div><p class="text-sm font-bold">${r.isim}</p><p class="text-[10px] text-gray-500 font-black">${r.saat} | ${r.tarih}</p></div>
+                    <button onclick="del('randevular',${r.id})" class="text-red-900/40 text-xs"><i class="fas fa-trash"></i></button>
                 </div>`;
-                x.t === today ? bl.innerHTML += h : gl.innerHTML += h;
+                if(r.tarih === bugunTarih) { bl.innerHTML += html; bAdet++; }
+                else { gl.innerHTML += html; }
             });
 
-            db.k.forEach(x => {
-                let h = `<div class="executive-card p-3 border-l-2 ${x.t==='gelir'?'border-green-500':'border-red-500'}">
-                    <p class="font-bold uppercase">${x.n}</p>
-                    <p class="font-black ${x.t==='gelir'?'text-green-500':'text-red-500'}">${x.f} ${x.d}</p>
-                    <p class="text-[8px] text-slate-500 mt-1">${x.dt}</p>
+            // Kasa
+            db.kasa.forEach(k => {
+                let pill = `<div class="p-3 mb-2 rounded-xl text-[10px] ${k.tur==='gelir'?'income-pill':'expense-pill'}">
+                    <p class="font-bold uppercase">${k.acik}</p>
+                    <p class="font-black text-white text-xs">${k.tutar} ${k.birim}</p>
                 </div>`;
-                if(x.t==='gelir') { cg.innerHTML += h; sGelir += x.tl; } else { cd.innerHTML += h; sGider += x.tl; }
-                if(x.m) al.innerHTML += `<div class="executive-card p-4 border-l-4 border-pink-600"><p class="font-black text-xs uppercase mb-1">${x.n}</p><div class="bg-black/40 p-3 rounded-lg text-[11px] italic text-slate-400 font-light leading-relaxed border border-dashed border-slate-800">${x.m}</div><p class="text-[8px] mt-2 text-slate-600 font-bold">${x.dt}</p></div>`;
+                if(k.tur === 'gelir') { gs.innerHTML += pill; toplamGelir += k.tl; }
+                else { ds.innerHTML += pill; toplamGider += k.tl; }
+                
+                if(k.not) {
+                    al.innerHTML += `<div class="premium-card p-5 border-t-2 border-pink-600/20">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="font-black text-xs uppercase">${k.acik}</p>
+                            <span class="text-[8px] bg-white/5 px-2 py-1 rounded text-gray-500">${k.tarih}</span>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded-lg border border-white/5 italic text-[11px] text-gray-400 leading-relaxed">${k.not}</div>
+                    </div>`;
+                }
             });
 
-            db.c.forEach(x => {
-                cl.innerHTML += `<div class="executive-card p-4 flex justify-between items-center border-l-2 border-slate-500">
-                    <div><p class="font-black text-xs uppercase">${x.n}</p><p class="text-[10px] text-slate-500">${x.t} - ${x.dt}</p></div>
-                    <p class="font-black text-pink-500">${x.m} TL</p>
+            // Personel
+            db.personel.forEach(p => {
+                pl.innerHTML += `<div class="premium-card p-4 flex justify-between items-center border-l-4 border-blue-500">
+                    <div><p class="text-xs font-black uppercase">${p.isim}</p><p class="text-[9px] text-gray-500">${p.tur} - ${p.tarih}</p></div>
+                    <p class="font-black text-white text-sm">${p.tutar} TL</p>
                 </div>`;
             });
 
-            document.getElementById('sumGelir').innerText = sGelir.toLocaleString() + " TL";
-            document.getElementById('sumGider').innerText = sGider.toLocaleString() + " TL";
+            document.getElementById('netKasa').innerText = (toplamGelir - toplamGider).toLocaleString() + " TL";
+            document.getElementById('bugunAdet').innerText = bAdet;
         }
 
-        function del(t,id) { if(confirm('Bu kayıt silinecek?')) { db[t] = db[t].filter(i=>i.id!==id); save(); } }
-        function save() { localStorage.setItem('YAH_PRO_DB', JSON.stringify(db)); render(); }
-        function search() {
-            let v = document.getElementById('src').value.toLowerCase();
-            document.querySelectorAll('#listArsiv > div').forEach(d => d.style.display = d.innerText.toLowerCase().includes(v)?'block':'none');
+        // Genel Fonksiyonlar
+        function save() { localStorage.setItem('YAH_PRO_EXECUTIVE', JSON.stringify(db)); refresh(); }
+        function del(type, id) { if(confirm('Bu kayıt tamamen silinsin mi?')) { db[type] = db[type].filter(x => x.id !== id); save(); } }
+        function searchArsiv() {
+            let val = document.getElementById('arsivSearch').value.toLowerCase();
+            document.querySelectorAll('#arsivList > div').forEach(d => d.style.display = d.innerText.toLowerCase().includes(val) ? 'block' : 'none');
         }
     </script>
 </body>
