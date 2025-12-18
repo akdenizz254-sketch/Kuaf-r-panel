@@ -2,193 +2,144 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yusuf Akdeniz Hair Palace | Yönetim</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yusuf Akdeniz | Pro Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #0f172a; color: white; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
-        .card-active { border-left: 4px solid #f472b6; }
-        .tab-btn.active { border-bottom: 3px solid #f472b6; color: #f472b6; }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        body { font-family: 'Outfit', sans-serif; background: #080a10; color: #e2e8f0; }
+        .glass-dark { background: rgba(17, 24, 39, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.05); }
+        .tab-active { color: #f472b6; border-bottom: 3px solid #f472b6; }
+        .income-col { background: rgba(34, 197, 94, 0.05); border-radius: 1.5rem; border: 1px solid rgba(34, 197, 94, 0.1); }
+        .expense-col { background: rgba(239, 68, 68, 0.05); border-radius: 1.5rem; border: 1px solid rgba(239, 68, 68, 0.1); }
     </style>
 </head>
-<body class="pb-24">
+<body class="pb-20">
 
-    <div id="loginPage" class="fixed inset-0 bg-slate-950 z-[200] flex flex-col items-center justify-center p-8">
-        <div class="mb-10 text-center">
-            <div class="w-24 h-24 bg-gradient-to-tr from-pink-500 to-violet-600 rounded-full flex items-center justify-center mx-auto shadow-2xl mb-4">
-                <i class="fas fa-scissors text-4xl text-white"></i>
-            </div>
-            <h1 class="text-3xl font-black tracking-tighter uppercase">Yusuf Akdeniz</h1>
-            <p class="text-pink-500 font-medium tracking-widest text-xs uppercase">Hair Palace Panel</p>
-        </div>
+    <div id="loginPage" class="fixed inset-0 bg-black z-[500] flex flex-col items-center justify-center p-6">
+        <h1 class="text-3xl font-black text-pink-500 mb-8 uppercase tracking-widest italic">Yusuf Akdeniz</h1>
         <div class="w-full max-w-sm space-y-4">
-            <input id="user" type="text" placeholder="Kullanıcı Adı" class="w-full p-4 bg-slate-900 border border-slate-800 rounded-2xl outline-none focus:border-pink-500 transition-all">
-            <input id="pass" type="password" placeholder="Şifre" class="w-full p-4 bg-slate-900 border border-slate-800 rounded-2xl outline-none focus:border-pink-500 transition-all">
-            <button onclick="login()" class="w-full bg-pink-600 hover:bg-pink-500 text-white p-4 rounded-2xl font-bold shadow-lg transition-all active:scale-95">Sisteme Giriş Yap</button>
+            <input id="user" type="text" placeholder="Admin" class="w-full p-4 bg-gray-900 rounded-2xl border border-gray-800 outline-none focus:border-pink-500">
+            <input id="pass" type="password" placeholder="Şifre" class="w-full p-4 bg-gray-900 rounded-2xl border border-gray-800 outline-none focus:border-pink-500">
+            <button onclick="login()" class="w-full bg-pink-600 p-4 rounded-2xl font-bold uppercase tracking-widest">GİRİŞ</button>
         </div>
     </div>
 
     <div id="mainContent" class="hidden">
-        <header class="p-6 flex justify-between items-center sticky top-0 bg-slate-950/80 backdrop-blur-md z-50">
-            <div>
-                <h2 class="text-xl font-extrabold uppercase tracking-tight">Hair Palace</h2>
-                <p class="text-[10px] text-pink-500 font-bold" id="activeUserDisplay"></p>
-            </div>
-            <div class="flex gap-4">
-                <button onclick="logout()" class="text-slate-500 hover:text-red-500"><i class="fas fa-power-off text-xl"></i></button>
-            </div>
+        <header class="p-6 bg-black/40 sticky top-0 z-50 backdrop-blur-md flex justify-between items-center border-b border-white/5">
+            <h2 class="text-xl font-black italic">Hair Palace</h2>
+            <button onclick="logout()" class="text-gray-500"><i class="fas fa-power-off text-xl"></i></button>
         </header>
 
-        <div class="px-6 grid grid-cols-2 gap-4 mb-8">
-            <div class="glass p-4 rounded-3xl">
-                <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Bugün Kasa</p>
-                <p id="toplamKasa" class="text-2xl font-black text-green-400">0 TL</p>
+        <div class="p-6 grid grid-cols-3 gap-3">
+            <div class="glass-dark p-4 rounded-2xl text-center border-b-4 border-green-500">
+                <p class="text-[10px] font-bold text-gray-500">GELİR</p>
+                <p id="sum-gelir" class="font-black text-green-400">0</p>
             </div>
-            <div class="glass p-4 rounded-3xl">
-                <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Randevular</p>
-                <p id="toplamRandevu" class="text-2xl font-black text-pink-400">0</p>
+            <div class="glass-dark p-4 rounded-2xl text-center border-b-4 border-red-500">
+                <p class="text-[10px] font-bold text-gray-500">GİDER</p>
+                <p id="sum-gider" class="font-black text-red-400">0</p>
+            </div>
+            <div class="glass-dark p-4 rounded-2xl text-center border-b-4 border-pink-500">
+                <p class="text-[10px] font-bold text-gray-500">NET</p>
+                <p id="sum-net" class="font-black text-white">0</p>
             </div>
         </div>
 
-        <div class="px-6 flex gap-6 mb-6 border-b border-slate-800">
-            <button onclick="changeTab('randevu')" id="btn-randevu" class="tab-btn pb-2 text-sm font-bold active">RANDEVULAR</button>
-            <button onclick="changeTab('kasa')" id="btn-kasa" class="tab-btn pb-2 text-sm font-bold text-slate-500">KASA/İŞLEMLER</button>
-            <button onclick="changeTab('arsiv')" id="btn-arsiv" class="tab-btn pb-2 text-sm font-bold text-slate-500">BOYA ARŞİVİ</button>
+        <div class="px-6 flex justify-around mb-6">
+            <button onclick="setTab('r')" id="btn-r" class="pb-2 font-bold text-sm tab-active uppercase">Randevular</button>
+            <button onclick="setTab('k')" id="btn-k" class="pb-2 font-bold text-sm text-gray-500 uppercase">Kasa (Sütunlu)</button>
+            <button onclick="setTab('a')" id="btn-a" class="pb-2 font-bold text-sm text-gray-500 uppercase">Boya Arşivi</button>
         </div>
 
-        <div id="tab-randevu" class="tab-content px-6 space-y-4">
-            <div class="glass p-5 rounded-[2rem] space-y-3">
-                <h3 class="text-sm font-bold text-pink-500"><i class="fas fa-calendar-plus mr-2"></i>Yeni Randevu Oluştur</h3>
-                <input id="r_ad" type="text" placeholder="Müşteri Adı" class="w-full bg-slate-900/50 p-3 rounded-xl border border-slate-700 outline-none">
-                <div class="flex gap-2">
-                    <input id="r_saat" type="time" class="w-1/2 bg-slate-900/50 p-3 rounded-xl border border-slate-700 outline-none">
-                    <input id="r_tarih" type="date" class="w-1/2 bg-slate-900/50 p-3 rounded-xl border border-slate-700 outline-none">
+        <div id="tab-r" class="tab-view px-6 space-y-6">
+            <div class="glass-dark p-5 rounded-3xl">
+                <h3 class="text-xs font-black text-pink-500 mb-4 uppercase tracking-tighter">Yeni Randevu Kaydı</h3>
+                <div class="grid gap-3">
+                    <input id="r_ad" type="text" placeholder="Müşteri Adı" class="bg-black/20 p-4 rounded-xl border border-gray-800 outline-none">
+                    <div class="flex gap-2">
+                        <input id="r_saat" type="time" class="w-1/2 bg-black/20 p-4 rounded-xl border border-gray-800 outline-none">
+                        <input id="r_tarih" type="date" class="w-1/2 bg-black/20 p-4 rounded-xl border border-gray-800 outline-none">
+                    </div>
+                    <button onclick="addR()" class="bg-pink-600 p-4 rounded-xl font-bold uppercase text-xs">Kaydet</button>
                 </div>
-                <button onclick="randevuEkle()" class="w-full bg-pink-600 p-3 rounded-xl font-bold shadow-lg shadow-pink-900/20">LİSTEYE EKLE</button>
             </div>
-            <div id="randevuListe" class="space-y-3"></div>
+            
+            <div class="space-y-4">
+                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest border-l-4 border-pink-500 pl-2">Bugünün Randevuları</h4>
+                <div id="list-bugun" class="space-y-3"></div>
+                
+                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest border-l-4 border-blue-500 pl-2 mt-8">Gelecek Randevular</h4>
+                <div id="list-yarın" class="space-y-3"></div>
+            </div>
         </div>
 
-        <div id="tab-kasa" class="tab-content hidden px-6 space-y-4">
-            <div class="glass p-5 rounded-[2rem] space-y-3">
-                <h3 class="text-sm font-bold text-green-500"><i class="fas fa-cash-register mr-2"></i>İşlem/Gider Kaydet</h3>
-                <input id="k_ad" type="text" placeholder="Müşteri veya Gider Adı" class="w-full bg-slate-900/50 p-3 rounded-xl border border-slate-700 outline-none">
-                <div class="flex gap-2">
-                    <select id="k_tip" class="w-1/2 bg-slate-900/50 p-3 rounded-xl border border-slate-700 outline-none">
+        <div id="tab-k" class="tab-view hidden px-4">
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="income-col p-3">
+                    <h3 class="text-[10px] font-black text-green-500 mb-4 text-center uppercase tracking-widest border-b border-green-500/20 pb-2">Gelirler (+)</h3>
+                    <div id="col-gelir" class="space-y-3"></div>
+                </div>
+                <div class="expense-col p-3">
+                    <h3 class="text-[10px] font-black text-red-500 mb-4 text-center uppercase tracking-widest border-b border-red-500/20 pb-2">Giderler (-)</h3>
+                    <div id="col-gider" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <div class="glass-dark p-6 rounded-[2rem] border-t-4 border-white/10">
+                <input id="k_ad" type="text" placeholder="İşlem veya Gider Adı" class="w-full bg-black/40 p-4 rounded-xl mb-3 border border-gray-800 outline-none">
+                <div class="flex gap-2 mb-3">
+                    <select id="k_tip" class="w-1/2 bg-black/40 p-4 rounded-xl border border-gray-800 outline-none text-xs">
                         <option value="gelir">GELİR (+)</option>
                         <option value="gider">GİDER (-)</option>
                     </select>
-                    <input id="k_tutar" type="number" placeholder="Tutar TL" class="w-1/2 bg-slate-900/50 p-3 rounded-xl border border-slate-700 outline-none">
+                    <input id="k_ucret" type="number" placeholder="Tutar TL" class="w-1/2 bg-black/40 p-4 rounded-xl border border-gray-800 outline-none">
                 </div>
-                <textarea id="k_not" placeholder="Boya numaraları veya işlem detayı..." class="w-full bg-slate-900/50 p-3 rounded-xl border border-slate-700 outline-none h-20 text-xs"></textarea>
-                <button onclick="kasaEkle()" class="w-full bg-green-600 p-3 rounded-xl font-bold">KASAYA İŞLE</button>
+                <textarea id="k_not" placeholder="Boya numaraları veya notlar..." class="w-full bg-black/40 p-4 rounded-xl h-20 border border-gray-800 outline-none text-xs"></textarea>
+                <button onclick="addK()" class="w-full bg-white text-black p-4 rounded-xl font-black uppercase text-[10px]">Veriyi İşle</button>
             </div>
-            <div id="kasaListe" class="space-y-3"></div>
         </div>
 
-        <div id="tab-arsiv" class="tab-content hidden px-6">
-            <input type="text" onkeyup="arsivAra()" id="arsivSearch" placeholder="Müşteri isminden boya ara..." class="w-full bg-slate-900 p-4 rounded-2xl border border-slate-800 mb-4 outline-none">
-            <div id="arsivListe" class="space-y-3"></div>
+        <div id="tab-a" class="tab-view hidden px-6">
+            <input onkeyup="searchArsiv()" id="arsivIn" type="text" placeholder="Müşteri isminden boya ara..." class="w-full bg-gray-900 p-4 rounded-2xl border border-gray-800 outline-none mb-6">
+            <div id="list-arsiv" class="space-y-4 pb-10"></div>
         </div>
-
     </div>
 
     <script>
-        let data = JSON.parse(localStorage.getItem('hp_data')) || { randevular: [], kasa: [] };
+        let db = JSON.parse(localStorage.getItem('yusuf_pro_v1')) || { r: [], k: [] };
+        const bugunTarih = new Date().toISOString().split('T')[0];
 
         function login() {
-            const u = document.getElementById('user').value;
-            const p = document.getElementById('pass').value;
-            if(u === 'admin' && p === '1234') {
+            if(document.getElementById('user').value === 'admin' && document.getElementById('pass').value === '1234') {
                 document.getElementById('loginPage').classList.add('hidden');
                 document.getElementById('mainContent').classList.remove('hidden');
-                document.getElementById('activeUserDisplay').innerText = "HOŞ GELDİN, YUSUF AKDENİZ";
-                renderAll();
-            } else { alert("Hatalı Giriş!"); }
+                render();
+            } else alert("Hatalı Giriş!");
         }
 
-        function changeTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active', 'text-pink-500'));
-            document.getElementById('tab-' + tabName).classList.remove('hidden');
-            document.getElementById('btn-' + tabName).classList.add('active', 'text-pink-500');
+        function setTab(t) {
+            document.querySelectorAll('.tab-view').forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('button[id^="btn-"]').forEach(b => b.classList.remove('tab-active', 'text-pink-500'));
+            document.getElementById('tab-'+t).classList.remove('hidden');
+            document.getElementById('btn-'+t).classList.add('tab-active', 'text-pink-500');
         }
 
-        function randevuEkle() {
+        function addR() {
             const ad = document.getElementById('r_ad').value;
             const saat = document.getElementById('r_saat').value;
-            const tarih = document.getElementById('r_tarih').value;
-            if(!ad || !saat) return alert("Bilgileri giriniz!");
-            
-            data.randevular.unshift({ id: Date.now(), ad, saat, tarih: tarih || "Bugün", status: 'bekliyor' });
+            const tarih = document.getElementById('r_tarih').value || bugunTarih;
+            if(!ad || !saat) return;
+            db.r.push({ id: Date.now(), ad, saat, tarih });
             save();
             document.getElementById('r_ad').value = "";
         }
 
-        function kasaEkle() {
+        function addK() {
             const ad = document.getElementById('k_ad').value;
             const tip = document.getElementById('k_tip').value;
-            const tutar = Number(document.getElementById('k_tutar').value);
+            const ucret = Number(document.getElementById('k_ucret').value);
             const not = document.getElementById('k_not').value;
-            if(!ad || !tutar) return alert("Eksik bilgi!");
-
-            data.kasa.unshift({ id: Date.now(), ad, tip, tutar, not, tarih: new Date().toLocaleDateString('tr-TR') });
-            save();
-            document.getElementById('k_ad').value = "";
-            document.getElementById('k_tutar').value = "";
-            document.getElementById('k_not').value = "";
-        }
-
-        function renderAll() {
-            const rListe = document.getElementById('randevuListe');
-            const kListe = document.getElementById('kasaListe');
-            const aListe = document.getElementById('arsivListe');
-            
-            rListe.innerHTML = ""; kListe.innerHTML = ""; aListe.innerHTML = "";
-            let kasaTop = 0;
-
-            data.randevular.forEach(r => {
-                rListe.innerHTML += `<div class="glass p-4 rounded-2xl flex justify-between items-center border-l-4 border-pink-500">
-                    <div><p class="font-bold text-sm">${r.ad}</p><p class="text-[10px] text-slate-400">${r.tarih} | ${r.saat}</p></div>
-                    <button onclick="sil('r', ${r.id})" class="text-slate-600"><i class="fas fa-trash"></i></button>
-                </div>`;
-            });
-
-            data.kasa.forEach(k => {
-                if(k.tip === 'gelir') kasaTop += k.tutar; else kasaTop -= k.tutar;
-                kListe.innerHTML += `<div class="glass p-4 rounded-2xl flex justify-between items-start border-l-4 ${k.tip === 'gelir' ? 'border-green-500' : 'border-red-500'}">
-                    <div><p class="font-bold text-sm">${k.ad}</p><p class="text-[10px] text-slate-400">${k.tarih}</p><p class="text-[10px] text-pink-400 mt-1">${k.not || ''}</p></div>
-                    <p class="font-bold ${k.tip === 'gelir' ? 'text-green-400' : 'text-red-400'}">${k.tip === 'gelir' ? '+' : '-'}${k.tutar} TL</p>
-                </div>`;
-                
-                if(k.not) {
-                    aListe.innerHTML += `<div class="glass p-4 rounded-2xl">
-                        <p class="font-bold text-pink-500 text-sm">${k.ad}</p>
-                        <p class="text-xs text-slate-300 mt-2">${k.not}</p>
-                        <p class="text-[8px] text-slate-500 mt-2 uppercase">${k.tarih}</p>
-                    </div>`;
-                }
-            });
-
-            document.getElementById('toplamKasa').innerText = kasaTop + " TL";
-            document.getElementById('toplamRandevu').innerText = data.randevular.length;
-        }
-
-        function sil(tip, id) {
-            if(!confirm("Silmek istediğine emin misin?")) return;
-            if(tip === 'r') data.randevular = data.randevular.filter(x => x.id !== id);
-            save();
-        }
-
-        function save() {
-            localStorage.setItem('hp_data', JSON.stringify(data));
-            renderAll();
-        }
-
-        function logout() { location.reload(); }
-    </script>
-</body>
-</html>
+            if(!ad || !ucret) return;
+            db.k.
