@@ -3,295 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zarif Kuaför Yönetim Paneli</title>
+    <title>Yusuf Akdeniz Hair Palace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
 </head>
-<body class="bg-[#fdf2f8] min-h-screen pb-20">
+<body class="bg-gray-50 pb-24">
 
-    <div class="bg-white shadow-sm p-4 text-center border-b-2 border-pink-200">
-        <h1 class="text-2xl font-serif font-bold text-pink-600 tracking-widest uppercase">Zarif Yönetim</h1>
-        <p class="text-xs text-gray-400 italic">Müşteri & Randevu Takip Sistemi</p>
+    <div id="loginPage" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-6">
+        <div class="w-full max-w-sm text-center">
+            <div class="mb-6 inline-block p-5 rounded-full bg-pink-50 text-pink-500 text-4xl shadow-sm">
+                <i class="fas fa-crown"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Yusuf Akdeniz</h1>
+            <p class="text-gray-400 text-sm mb-8 italic">Hair Palace Yönetim Sistemi</p>
+            <div class="space-y-4">
+                <input id="user" type="text" placeholder="Kullanıcı Adı" class="w-full p-4 border rounded-2xl outline-none focus:ring-2 focus:ring-pink-300 transition-all">
+                <input id="pass" type="password" placeholder="Şifre" class="w-full p-4 border rounded-2xl outline-none focus:ring-2 focus:ring-pink-300 transition-all">
+                <button onclick="login()" class="w-full bg-pink-500 text-white p-4 rounded-2xl font-bold shadow-lg shadow-pink-200 active:scale-95 transition-all">Giriş Yap</button>
+            </div>
+        </div>
     </div>
 
-    <div class="max-w-md mx-auto p-4 space-y-6">
-        
-        <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-green-400">
-                <p class="text-gray-500 text-xs font-bold uppercase">Bugün Gelir</p>
-                <p id="bugunGelir" class="text-xl font-bold text-gray-800">0 TL</p>
+    <div id="mainContent" class="hidden">
+        <header class="bg-white p-5 shadow-sm sticky top-0 z-50 flex justify-between items-center border-b border-pink-100">
+            <div>
+                <h1 class="text-lg font-bold text-gray-800">Hair Palace</h1>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    <span class="text-[10px] text-gray-400 font-medium uppercase tracking-widest" id="activeUser"></span>
+                </div>
             </div>
-            <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-red-400">
-                <p class="text-gray-500 text-xs font-bold uppercase">Bugün Gider</p>
-                <p id="bugunGider" class="text-xl font-bold text-gray-800">0 TL</p>
+            <button onclick="logout()" class="p-2 text-gray-300 hover:text-red-500 transition-colors"><i class="fas fa-power-off text-xl"></i></button>
+        </header>
+
+        <div class="p-4 space-y-5">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-3xl shadow-sm border-l-4 border-pink-400">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase mb-1 text-center">Bugün Toplam</p>
+                    <p id="ciro" class="text-xl font-black text-gray-800 text-center">0 TL</p>
+                </div>
+                <div class="bg-white p-4 rounded-3xl shadow-sm border-l-4 border-gray-800">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase mb-1 text-center">Aylık Kâr</p>
+                    <p id="kar" class="text-xl font-black text-gray-800 text-center">0 TL</p>
+                </div>
             </div>
+
+            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+                <h3 class="font-bold text-gray-700 mb-4 flex items-center">
+                    <i class="fas fa-magic text-pink-500 mr-2"></i> Yeni İşlem Kaydı
+                </h3>
+                <div class="grid grid-cols-1 gap-3 text-sm">
+                    <input id="m_ad" type="text" placeholder="Müşteri Adı Soyadı" class="w-full p-3 bg-gray-50 rounded-xl outline-none focus:bg-white border-transparent focus:border-pink-200 border transition-all">
+                    <div class="flex gap-2">
+                        <select id="m_islem" class="w-1/2 p-3 bg-gray-50 rounded-xl outline-none border-transparent focus:border-pink-200 border">
+                            <option value="Kesim">Saç Kesimi</option>
+                            <option value="Boya">Boyama İşlemi</option>
+                            <option value="Bakım">Saç Bakımı</option>
+                            <option value="Fön">Fön / Maşa</option>
+                            <option value="Gider">DÜKKAN GİDERİ</option>
+                        </select>
+                        <input id="m_ucret" type="number" placeholder="Tutar (TL)" class="w-1/2 p-3 bg-pink-50 rounded-xl font-bold text-pink-600 outline-none">
+                    </div>
+                    <textarea id="m_not" placeholder="Boya numaraları veya özel notlar..." class="w-full p-3 bg-gray-50 rounded-xl outline-none h-20 text-xs"></textarea>
+                    <button onclick="kaydet()" class="w-full bg-gray-800 text-white py-4 rounded-2xl font-bold shadow-md active:scale-95 transition-all">KAYDET</button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between px-2">
+                <h3 class="font-bold text-gray-700">Günlük Akış</h3>
+                <input type="text" id="arama" onkeyup="ara()" placeholder="Müşteri Ara..." class="text-xs p-2 bg-white border rounded-lg outline-none">
+            </div>
+
+            <div id="liste" class="space-y-3">
+                </div>
         </div>
 
-        <div class="bg-white p-6 rounded-3xl shadow-lg border border-pink-100">
-            <h2 class="text-lg font-bold text-gray-700 mb-4 flex items-center">
-                <i class="fas fa-plus-circle text-pink-500 mr-2"></i> Yeni İşlem Ekle
-            </h2>
-            <div class="space-y-3">
-                <input id="musteri" type="text" placeholder="Müşteri Adı Soyadı" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none">
-                <select id="islem" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl outline-none">
-                    <option value="">İşlem Seçiniz...</option>
-                    <option value="Kesim">Saç Kesimi</option>
-                    <option value="Boya">Boyama / Dip Boya</option>
-                    <option value="Fön">Fön / Maşa</option>
-                    <option value="Bakım">Bakım / Keratin</option>
-                    <option value="Manikür">Manikür / Pedikür</option>
-                    <option value="Diğer">Diğer İşlem</option>
-                </select>
-                <input id="tutar" type="number" placeholder="Ücret (TL)" class="w-full p-3 bg-pink-50 border border-pink-100 rounded-xl font-bold text-pink-700 outline-none">
-                <button onclick="kaydet('gelir')" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 rounded-2xl transition-all active:scale-95 shadow-md shadow-pink-200">
-                    KAYDI TAMAMLA
-                </button>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-3xl shadow-lg overflow-hidden">
-            <div class="bg-pink-600 p-4 text-white font-bold flex justify-between">
-                <span>Günlük İşlem Listesi</span>
-                <i class="fas fa-calendar-day"></i>
-            </div>
-            <div id="liste" class="divide-y divide-gray-100 max-h-60 overflow-y-auto">
-                <p class="p-10 text-center text-gray-400 text-sm italic">Henüz işlem girilmedi...</p>
-            </div>
-        </div>
-
-        <button onclick="giderModalAc()" class="w-full bg-gray-800 text-white py-3 rounded-xl font-bold text-sm opacity-80">
-            DÜKKAN GİDERİ YAZ (Kira, Malzeme vb.)
-        </button>
-
-    </div>
-
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-3 flex justify-around shadow-2xl">
-        <button class="text-pink-500 flex flex-col items-center"><i class="fas fa-home"></i><span class="text-[10px]">Ana Sayfa</span></button>
-        <button class="text-gray-400 flex flex-col items-center"><i class="fas fa-users"></i><span class="text-[10px]">Müşteriler</span></button>
-        <button class="text-gray-400 flex flex-col items-center"><i class="fas fa-chart-line"></i><span class="text-[10px]">Raporlar</span></button>
+        <nav class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t p-4 flex justify-around shadow-2xl">
+            <button class="text-pink-500"><i class="fas fa-th-large text-xl"></i></button>
+            <button onclick="alert('Müşteri Veritabanı Hazırlanıyor...')" class="text-gray-300"><i class="fas fa-users text-xl"></i></button>
+            <button onclick="alert('Finansal Raporlar Yakında!')" class="text-gray-300"><i class="fas fa-chart-line text-xl"></i></button>
+        </nav>
     </div>
 
     <script>
-        let kasa = JSON.parse(localStorage.getItem('zarifKuafor')) || { gelirler: [], giderler: [] };
+        let db = JSON.parse(localStorage.getItem('yusuf_db')) || [];
+        let user = "";
 
-        function kaydet(tip) {
-            const m = document.getElementById('musteri').value;
-            const i = document.getElementById('islem').value;
-            const t = Number(document.getElementById('tutar').value);
-
-            if(!m || !t) { alert("Lütfen isim ve tutar giriniz!"); return; }
-
-            const yeniKayıt = {
-                id: Date.now(),
-                isim: m,
-                islem: i,
-                tutar: t,
-                tarih: new Date().toLocaleDateString('tr-TR')
-            };
-
-            kasa.gelirler.unshift(yeniKayıt);
-            temizleVeGuncelle();
+        function login() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            if(u === 'admin' && p === '1234') {
+                user = u;
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                document.getElementById('activeUser').innerText = u;
+                arayuzGuncelle();
+            } else { alert("Hatalı Giriş!"); }
         }
 
-        function temizleVeGuncelle() {
-            localStorage.setItem('zarifKuafor', JSON.stringify(kasa));
-            document.getElementById('musteri').value = "";
-            document.getElementById('tutar').value = "";
+        function kaydet() {
+            const ad = document.getElementById('m_ad').value;
+            const islem = document.getElementById('m_islem').value;
+            const ucret = Number(document.getElementById('m_ucret').value);
+            const not = document.getElementById('m_not').value;
+
+            if(!ad || !ucret) return alert("Lütfen isim ve tutar giriniz!");
+
+            const veri = {
+                id: Date.now(),
+                ad, islem, ucret, not,
+                tarih: new Date().toLocaleDateString('tr-TR'),
+                saat: new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'}),
+                tip: islem === 'Gider' ? 'gider' : 'gelir'
+            };
+
+            db.unshift(veri);
+            localStorage.setItem('yusuf_db', JSON.stringify(db));
+            
+            // Temizlik
+            document.getElementById('m_ad').value = "";
+            document.getElementById('m_ucret').value = "";
+            document.getElementById('m_not').value = "";
             arayuzGuncelle();
         }
 
         function arayuzGuncelle() {
             const liste = document.getElementById('liste');
-            const gGosterge = document.getElementById('bugunGelir');
-            
+            const ciroGoster = document.getElementById('ciro');
+            const karGoster = document.getElementById('kar');
+            const bugun = new Date().toLocaleDateString('tr-TR');
+
             let toplamGelir = 0;
+            let aylikKar = 0;
             liste.innerHTML = "";
 
-            kasa.gelirler.forEach(item => {
-                toplamGelir += item.tutar;
+            db.forEach(item => {
+                if(item.tarih === bugun && item.tip === 'gelir') toplamGelir += item.ucret;
+                
+                if(item.tip === 'gelir') aylikKar += item.ucret;
+                else aylikKar -= item.ucret;
+
                 liste.innerHTML += `
-                    <div class="p-4 flex justify-between items-center bg-white hover:bg-gray-50">
-                        <div>
-                            <p class="font-bold text-gray-800 text-sm">${item.isim}</p>
-                            <p class="text-xs text-pink-400">${item.islem}</p>
+                    <div class="bg-white p-4 rounded-3xl shadow-sm border-l-4 ${item.tip === 'gider' ? 'border-red-500' : 'border-pink-500'} flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="font-bold text-gray-800">${item.ad}</span>
+                                <span class="text-[8px] bg-gray-100 px-2 py-0.5 rounded-full text-gray-500">${item.saat}</span>
+                            </div>
+                            <p class="text-xs text-pink-400 font-semibold mb-2">${item.islem}</p>
+                            ${item.not ? `<p class="text-[10px] text-gray-400 italic bg-gray-50 p-2 rounded-lg border border-dashed border-gray-200">${item.not}</p>` : ''}
                         </div>
                         <div class="text-right">
-                            <p class="font-bold text-green-600">${item.tutar} TL</p>
-                            <button onclick="sil(${item.id})" class="text-[10px] text-gray-300 hover:text-red-500">SİL</button>
+                            <p class="font-black ${item.tip === 'gider' ? 'text-red-500' : 'text-green-600'}">${item.tip === 'gider' ? '-' : ''}${item.ucret} TL</p>
+                            <button onclick="sil(${item.id})" class="text-[10px] text-gray-300 mt-4 hover:text-red-500">KAYDI SİL</button>
                         </div>
                     </div>
                 `;
             });
 
-            gGosterge.innerText = toplamGelir + " TL";
-            if(kasa.gelirler.length === 0) liste.innerHTML = '<p class="p-10 text-center text-gray-400 text-sm italic">Henüz işlem girilmedi...</p>';
+            ciroGoster.innerText = toplamGelir + " TL";
+            karGoster.innerText = aylikKar + " TL";
+        }
+
+        function ara() {
+            let kelime = document.getElementById('arama').value.toLowerCase();
+            let kartlar = document.getElementById('liste').children;
+            for (let kart of kartlar) {
+                let isim = kart.querySelector('span.font-bold').innerText.toLowerCase();
+                kart.style.display = isim.includes(kelime) ? "flex" : "none";
+            }
         }
 
         function sil(id) {
-            if(confirm("Bu kaydı silmek istiyor musunuz?")) {
-                kasa.gelirler = kasa.gelirler.filter(x => x.id !== id);
-                temizleVeGuncelle();
+            if(confirm("Bu işlemi silmek istediğinize emin misiniz?")) {
+                db = db.filter(x => x.id !== id);
+                localStorage.setItem('yusuf_db', JSON.stringify(db));
+                arayuzGuncelle();
             }
         }
 
-        function giderModalAc() {
-            let aciklama = prompt("Gider Açıklaması (Örn: Boya alımı):");
-            let miktar = Number(prompt("Gider Tutarı (TL):"));
-            if(aciklama && miktar) {
-                // Gider mantığı buraya eklenebilir
-                alert("Gider kaydedildi (Bu sürümde sadece gelir listelenmektedir)");
-            }
-        }
-
-        arayuzGuncelle();
-    </script>
-</body>
-  </html><!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zarif Kuaför Yönetim Paneli</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body class="bg-[#fdf2f8] min-h-screen pb-20">
-
-    <div class="bg-white shadow-sm p-4 text-center border-b-2 border-pink-200">
-        <h1 class="text-2xl font-serif font-bold text-pink-600 tracking-widest uppercase">Zarif Yönetim</h1>
-        <p class="text-xs text-gray-400 italic">Müşteri & Randevu Takip Sistemi</p>
-    </div>
-
-    <div class="max-w-md mx-auto p-4 space-y-6">
-        
-        <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-green-400">
-                <p class="text-gray-500 text-xs font-bold uppercase">Bugün Gelir</p>
-                <p id="bugunGelir" class="text-xl font-bold text-gray-800">0 TL</p>
-            </div>
-            <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-red-400">
-                <p class="text-gray-500 text-xs font-bold uppercase">Bugün Gider</p>
-                <p id="bugunGider" class="text-xl font-bold text-gray-800">0 TL</p>
-            </div>
-        </div>
-
-        <div class="bg-white p-6 rounded-3xl shadow-lg border border-pink-100">
-            <h2 class="text-lg font-bold text-gray-700 mb-4 flex items-center">
-                <i class="fas fa-plus-circle text-pink-500 mr-2"></i> Yeni İşlem Ekle
-            </h2>
-            <div class="space-y-3">
-                <input id="musteri" type="text" placeholder="Müşteri Adı Soyadı" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none">
-                <select id="islem" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl outline-none">
-                    <option value="">İşlem Seçiniz...</option>
-                    <option value="Kesim">Saç Kesimi</option>
-                    <option value="Boya">Boyama / Dip Boya</option>
-                    <option value="Fön">Fön / Maşa</option>
-                    <option value="Bakım">Bakım / Keratin</option>
-                    <option value="Manikür">Manikür / Pedikür</option>
-                    <option value="Diğer">Diğer İşlem</option>
-                </select>
-                <input id="tutar" type="number" placeholder="Ücret (TL)" class="w-full p-3 bg-pink-50 border border-pink-100 rounded-xl font-bold text-pink-700 outline-none">
-                <button onclick="kaydet('gelir')" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 rounded-2xl transition-all active:scale-95 shadow-md shadow-pink-200">
-                    KAYDI TAMAMLA
-                </button>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-3xl shadow-lg overflow-hidden">
-            <div class="bg-pink-600 p-4 text-white font-bold flex justify-between">
-                <span>Günlük İşlem Listesi</span>
-                <i class="fas fa-calendar-day"></i>
-            </div>
-            <div id="liste" class="divide-y divide-gray-100 max-h-60 overflow-y-auto">
-                <p class="p-10 text-center text-gray-400 text-sm italic">Henüz işlem girilmedi...</p>
-            </div>
-        </div>
-
-        <button onclick="giderModalAc()" class="w-full bg-gray-800 text-white py-3 rounded-xl font-bold text-sm opacity-80">
-            DÜKKAN GİDERİ YAZ (Kira, Malzeme vb.)
-        </button>
-
-    </div>
-
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-3 flex justify-around shadow-2xl">
-        <button class="text-pink-500 flex flex-col items-center"><i class="fas fa-home"></i><span class="text-[10px]">Ana Sayfa</span></button>
-        <button class="text-gray-400 flex flex-col items-center"><i class="fas fa-users"></i><span class="text-[10px]">Müşteriler</span></button>
-        <button class="text-gray-400 flex flex-col items-center"><i class="fas fa-chart-line"></i><span class="text-[10px]">Raporlar</span></button>
-    </div>
-
-    <script>
-        let kasa = JSON.parse(localStorage.getItem('zarifKuafor')) || { gelirler: [], giderler: [] };
-
-        function kaydet(tip) {
-            const m = document.getElementById('musteri').value;
-            const i = document.getElementById('islem').value;
-            const t = Number(document.getElementById('tutar').value);
-
-            if(!m || !t) { alert("Lütfen isim ve tutar giriniz!"); return; }
-
-            const yeniKayıt = {
-                id: Date.now(),
-                isim: m,
-                islem: i,
-                tutar: t,
-                tarih: new Date().toLocaleDateString('tr-TR')
-            };
-
-            kasa.gelirler.unshift(yeniKayıt);
-            temizleVeGuncelle();
-        }
-
-        function temizleVeGuncelle() {
-            localStorage.setItem('zarifKuafor', JSON.stringify(kasa));
-            document.getElementById('musteri').value = "";
-            document.getElementById('tutar').value = "";
-            arayuzGuncelle();
-        }
-
-        function arayuzGuncelle() {
-            const liste = document.getElementById('liste');
-            const gGosterge = document.getElementById('bugunGelir');
-            
-            let toplamGelir = 0;
-            liste.innerHTML = "";
-
-            kasa.gelirler.forEach(item => {
-                toplamGelir += item.tutar;
-                liste.innerHTML += `
-                    <div class="p-4 flex justify-between items-center bg-white hover:bg-gray-50">
-                        <div>
-                            <p class="font-bold text-gray-800 text-sm">${item.isim}</p>
-                            <p class="text-xs text-pink-400">${item.islem}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-bold text-green-600">${item.tutar} TL</p>
-                            <button onclick="sil(${item.id})" class="text-[10px] text-gray-300 hover:text-red-500">SİL</button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            gGosterge.innerText = toplamGelir + " TL";
-            if(kasa.gelirler.length === 0) liste.innerHTML = '<p class="p-10 text-center text-gray-400 text-sm italic">Henüz işlem girilmedi...</p>';
-        }
-
-        function sil(id) {
-            if(confirm("Bu kaydı silmek istiyor musunuz?")) {
-                kasa.gelirler = kasa.gelirler.filter(x => x.id !== id);
-                temizleVeGuncelle();
-            }
-        }
-
-        function giderModalAc() {
-            let aciklama = prompt("Gider Açıklaması (Örn: Boya alımı):");
-            let miktar = Number(prompt("Gider Tutarı (TL):"));
-            if(aciklama && miktar) {
-                // Gider mantığı buraya eklenebilir
-                alert("Gider kaydedildi (Bu sürümde sadece gelir listelenmektedir)");
-            }
-        }
-
-        arayuzGuncelle();
+        function logout() { location.reload(); }
     </script>
 </body>
 </html>
