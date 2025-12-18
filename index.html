@@ -3,30 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yusuf Akdeniz | Palace Management</title>
+    <title>Yusuf Akdeniz | Executive Cloud</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap');
         :root { --accent: #ff2d55; --bg: #050505; --card: #121214; }
         body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; }
-        
-        .weekly-grid { display: grid; grid-template-columns: repeat(7, minmax(280px, 1fr)); gap: 15px; overflow-x: auto; padding-bottom: 20px; }
-        .day-column { background: var(--card); border: 1px solid #1f1f23; border-radius: 20px; min-height: 500px; padding: 15px; }
-        
-        .personel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        .weekly-grid { display: grid; grid-template-columns: repeat(7, minmax(300px, 1fr)); gap: 15px; overflow-x: auto; padding-bottom: 20px; }
+        .day-column { background: var(--card); border: 1px solid #1f1f23; border-radius: 20px; min-height: 600px; padding: 15px; }
+        .personel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
         .personel-card { background: #16161a; border-radius: 15px; padding: 15px; border-top: 3px solid var(--accent); }
-
         .custom-btn { background: var(--accent); transition: 0.3s; box-shadow: 0 5px 15px rgba(255, 45, 85, 0.3); }
-        .custom-btn:active { transform: scale(0.95); }
-        
-        input, select, textarea { 
-            background: #1c1c21 !important; border: 1px solid #2d2d35 !important; 
-            border-radius: 12px !important; color: white !important; padding: 12px !important; width: 100%;
-        }
-        
-        ::-webkit-scrollbar { height: 6px; width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        input, select, textarea { background: #1c1c21 !important; border: 1px solid #2d2d35 !important; border-radius: 12px !important; color: white !important; padding: 12px !important; width: 100%; }
+        .tab-active { border-bottom: 3px solid var(--accent); color: var(--accent); }
     </style>
 </head>
 <body class="pb-10">
@@ -37,100 +29,98 @@
         <div class="w-full max-w-xs space-y-4">
             <input id="u" type="text" placeholder="Yönetici ID">
             <input id="p" type="password" placeholder="Şifre">
-            <button onclick="auth()" class="custom-btn w-full p-4 rounded-xl font-black uppercase">Sistemi Aç</button>
+            <button onclick="auth()" class="custom-btn w-full p-4 rounded-xl font-black uppercase">Buluta Bağlan</button>
         </div>
     </div>
 
     <div id="app" class="hidden">
         <header class="p-6 flex justify-between items-center sticky top-0 bg-black/80 backdrop-blur-xl z-50 border-b border-white/5">
-            <h2 class="text-xl font-black italic tracking-tighter">HAIR PALACE <span class="text-pink-600">.</span></h2>
+            <h2 class="text-xl font-black italic">HAIR PALACE <span class="text-pink-600">.</span></h2>
             <div class="flex gap-4">
-                <button onclick="tab('r')" class="text-xs font-black px-4 py-2 rounded-lg bg-white/5">RANDEVU</button>
-                <button onclick="tab('p')" class="text-xs font-black px-4 py-2 rounded-lg bg-white/5">PERSONEL</button>
-                <button onclick="tab('m')" class="text-xs font-black px-4 py-2 rounded-lg bg-white/5">MÜŞTERİ KARTLARI</button>
-                <button onclick="location.reload()" class="text-pink-600 ml-4"><i class="fas fa-power-off"></i></button>
+                <button onclick="tab('r')" id="btn-r" class="text-[10px] font-bold px-2 py-1 tab-active">RANDEVU</button>
+                <button onclick="tab('p')" id="btn-p" class="text-[10px] font-bold px-2 py-1">PERSONEL</button>
+                <button onclick="tab('m')" id="btn-m" class="text-[10px] font-bold px-2 py-1">MÜŞTERİLER</button>
             </div>
         </header>
 
         <div id="v-r" class="view p-6">
-            <div class="flex justify-between items-end mb-8">
-                <div>
-                    <h3 class="text-2xl font-black uppercase">Haftalık Ajanda</h3>
-                    <p class="text-gray-500 text-xs">Randevuları sütunlar halinde yönetin</p>
-                </div>
-                <button onclick="showAddR()" class="custom-btn px-6 py-3 rounded-xl font-bold text-xs uppercase">+ Yeni Randevu</button>
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-black uppercase">Haftalık Takvim</h3>
+                <button onclick="showModal('modalR')" class="custom-btn px-4 py-2 rounded-lg text-xs font-bold">+ YENİ</button>
             </div>
-
-            <div class="weekly-grid no-scrollbar" id="weeklyGrid">
-                </div>
+            <div class="weekly-grid no-scrollbar" id="weeklyGrid"></div>
         </div>
 
         <div id="v-p" class="view hidden p-6">
-            <h3 class="text-2xl font-black uppercase mb-6">Personel Avans & Maaş Takip</h3>
-            <div class="personel-grid" id="personelGrid">
-                </div>
+            <h3 class="text-xl font-black uppercase mb-6">Personel Takip</h3>
+            <div class="personel-grid" id="personelGrid"></div>
         </div>
 
         <div id="v-m" class="view hidden p-6">
-            <div class="flex justify-between items-center mb-8">
-                <h3 class="text-2xl font-black uppercase">Müşteri Kart Arşivi</h3>
-                <button onclick="showAddM()" class="bg-blue-600 px-6 py-3 rounded-xl font-bold text-xs uppercase">+ Yeni Müşteri Kaydı</button>
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-black uppercase">Müşteri Arşivi</h3>
+                <button onclick="showModal('modalM')" class="bg-blue-600 px-4 py-2 rounded-lg text-xs font-bold">+ YENİ KART</button>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="musteriList">
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="musteriList"></div>
         </div>
     </div>
 
-    <div id="modalR" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center p-6 backdrop-blur-sm">
-        <div class="executive-card p-8 w-full max-w-md space-y-4">
-            <h2 class="text-xl font-black uppercase italic">Randevu Kaydet</h2>
+    <div id="modalR" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center p-6">
+        <div class="bg-[#121214] p-8 w-full max-w-md space-y-4 rounded-2xl border border-white/10">
+            <h2 class="text-xl font-black">RANDEVU EKLE</h2>
             <input id="rn" type="text" placeholder="Müşteri Adı">
-            <input id="ri" type="text" placeholder="Yapılacak İşlem">
-            <div class="flex gap-2">
-                <input id="rs" type="text" placeholder="Saat (Örn: 10:30)">
-                <input id="rt" type="date">
-            </div>
-            <div class="flex gap-3">
-                <button onclick="closeModal('modalR')" class="flex-1 bg-white/10 p-4 rounded-xl font-bold">İptal</button>
-                <button onclick="saveR()" class="flex-1 custom-btn p-4 rounded-xl font-bold uppercase">Kaydı Tamamla</button>
-            </div>
+            <input id="ri" type="text" placeholder="İşlem (Fön, Kesim vb.)">
+            <input id="rs" type="time">
+            <input id="rt" type="date">
+            <button onclick="saveR()" class="custom-btn w-full p-4 rounded-xl font-bold">KAYDET</button>
+            <button onclick="closeModal('modalR')" class="w-full text-gray-500 text-xs">Kapat</button>
         </div>
     </div>
 
-    <div id="modalM" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center p-6 backdrop-blur-sm">
-        <div class="executive-card p-8 w-full max-w-md space-y-4">
-            <h2 class="text-xl font-black uppercase italic text-blue-500">Yeni Müşteri Kartı</h2>
-            <input id="mn" type="text" placeholder="Müşteri Adı Soyadı">
-            <input id="mb" type="text" placeholder="Boya Numarası / Markası">
-            <input id="mu" type="number" placeholder="Ödediği Ücret (TL)">
-            <input id="mt" type="date" value="">
-            <textarea id="mnnot" placeholder="Ekstra Notlar..." class="h-24"></textarea>
-            <div class="flex gap-3">
-                <button onclick="closeModal('modalM')" class="flex-1 bg-white/10 p-4 rounded-xl font-bold">İptal</button>
-                <button onclick="saveM()" class="flex-1 bg-blue-600 p-4 rounded-xl font-bold uppercase">Kartı Oluştur</button>
-            </div>
+    <div id="modalM" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center p-6">
+        <div class="bg-[#121214] p-8 w-full max-w-md space-y-4 rounded-2xl border border-blue-900/30">
+            <h2 class="text-xl font-black text-blue-500">MÜŞTERİ KARTI</h2>
+            <input id="mn" type="text" placeholder="Ad Soyad">
+            <input id="mb" type="text" placeholder="Boya Numarası / Notu">
+            <input id="mu" type="number" placeholder="Ödenen Ücret">
+            <input id="mt" type="date">
+            <button onclick="saveM()" class="bg-blue-600 w-full p-4 rounded-xl font-bold">KARTI OLUŞTUR</button>
+            <button onclick="closeModal('modalM')" class="w-full text-gray-500 text-xs">Kapat</button>
         </div>
     </div>
 
     <script>
-        const DB_KEY = 'YAH_ULTIMATE_DB';
-        let db = JSON.parse(localStorage.getItem(DB_KEY)) || { r: [], m: [], p: Array(10).fill().map((_, i) => ({ id: i, name: 'Personel ' + (i+1), logs: [] })) };
+        // FIREBASE BAĞLANTISI (SENİN LİNKİN)
+        const firebaseConfig = { databaseURL: "https://yusufakdenizhairpalace-c6884-default-rtdb.europe-west1.firebasedatabase.app/" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
         function auth() {
             if(document.getElementById('u').value === 'admin' && document.getElementById('p').value === '1234') {
                 document.getElementById('login').style.display = 'none';
                 document.getElementById('app').classList.remove('hidden');
-                init();
-            } else alert("Hata!");
+                listenData();
+            } else alert("Hatalı Giriş!");
         }
 
         function tab(t) {
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('header button').forEach(b => b.classList.remove('tab-active'));
             document.getElementById('v-'+t).classList.remove('hidden');
-            render();
+            document.getElementById('btn-'+t).classList.add('tab-active');
         }
 
-        function init() { render(); }
+        function showModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        let currentData = { r: {}, m: {}, p: {} };
+
+        function listenData() {
+            db.ref('/').on('value', (snapshot) => {
+                currentData = snapshot.val() || { r: {}, m: {}, p: {} };
+                render();
+            });
+        }
 
         function render() {
             renderRandevu();
@@ -142,24 +132,25 @@
             const grid = document.getElementById('weeklyGrid');
             grid.innerHTML = "";
             const today = new Date();
-            
             for(let i=0; i<7; i++) {
                 let d = new Date(); d.setDate(today.getDate() + i);
                 let dStr = d.toISOString().split('T')[0];
-                let dName = d.toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' });
-                
+                let dName = d.toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric' });
                 let col = `<div class="day-column">
-                    <h4 class="font-black uppercase text-sm mb-6 pb-2 border-b border-white/5 text-pink-600">${i===0 ? 'BUGÜN' : dName}</h4>
-                    <div class="space-y-3">`;
-                
-                db.r.filter(x => x.tarih === dStr).sort((a,b)=>a.saat.localeCompare(b.saat)).forEach(r => {
-                    col += `<div class="bg-white/5 p-4 rounded-xl border-l-4 border-pink-500 relative group">
-                        <p class="font-black text-sm">${r.ad}</p>
-                        <p class="text-[10px] font-bold text-gray-500 uppercase">${r.saat} - ${r.islem}</p>
-                        <button onclick="del('r',${r.id})" class="absolute top-2 right-2 text-xs text-red-900 opacity-0 group-hover:opacity-100"><i class="fas fa-trash"></i></button>
-                    </div>`;
-                });
-
+                    <h4 class="font-black text-pink-600 mb-4 border-b border-white/5 pb-2 text-sm uppercase">${i===0 ? 'BUGÜN' : dName}</h4>
+                    <div class="space-y-2">`;
+                if(currentData.r) {
+                    Object.keys(currentData.r).forEach(id => {
+                        let r = currentData.r[id];
+                        if(r.tarih === dStr) {
+                            col += `<div class="bg-white/5 p-3 rounded-xl border-l-2 border-pink-500 relative">
+                                <p class="text-xs font-bold">${r.ad}</p>
+                                <p class="text-[10px] text-gray-400">${r.saat} | ${r.islem}</p>
+                                <button onclick="del('r','${id}')" class="absolute top-1 right-1 text-red-900 text-[10px]"><i class="fas fa-trash"></i></button>
+                            </div>`;
+                        }
+                    });
+                }
                 col += `</div></div>`;
                 grid.innerHTML += col;
             }
@@ -168,71 +159,71 @@
         function renderPersonel() {
             const grid = document.getElementById('personelGrid');
             grid.innerHTML = "";
-            db.p.forEach((p, idx) => {
+            for(let i=1; i<=10; i++) {
+                let pData = (currentData.p && currentData.p[i]) ? currentData.p[i] : { name: 'Personel '+i, logs: {} };
                 let card = `<div class="personel-card">
-                    <input onchange="updPN(${idx}, this.value)" value="${p.name}" class="text-xs font-black uppercase mb-4 text-pink-500 bg-transparent border-none p-0">
-                    <div class="space-y-2 mb-4 max-h-40 overflow-y-auto pr-2">`;
-                p.logs.forEach(l => {
-                    card += `<div class="flex justify-between text-[10px] bg-black/20 p-2 rounded"><span>${l.txt}</span><span class="text-red-500">-${l.val}</span></div>`;
-                });
+                    <input onchange="updPN(${i}, this.value)" value="${pData.name}" class="font-black uppercase text-xs text-pink-500 bg-transparent border-none mb-4">
+                    <div class="space-y-1 mb-4 max-h-32 overflow-y-auto">`;
+                if(pData.logs) {
+                    Object.keys(pData.logs).forEach(lid => {
+                        let l = pData.logs[lid];
+                        card += `<div class="flex justify-between text-[10px] bg-black/40 p-1 px-2 rounded"><span>Avans</span><span class="text-red-500">-${l.val}</span></div>`;
+                    });
+                }
                 card += `</div>
                     <div class="flex gap-1">
-                        <input id="pv-${idx}" type="number" placeholder="₺" class="p-1 text-xs">
-                        <button onclick="addPL(${idx})" class="bg-white text-black text-[10px] px-2 rounded font-black">EKLE</button>
+                        <input id="pv-${i}" type="number" placeholder="₺" class="text-[10px] p-1">
+                        <button onclick="addPL(${i})" class="bg-white text-black text-[10px] px-2 font-bold rounded">EKLE</button>
                     </div>
                 </div>`;
                 grid.innerHTML += card;
-            });
+            }
         }
 
         function renderMusteri() {
             const list = document.getElementById('musteriList');
             list.innerHTML = "";
-            db.m.sort((a,b)=> new Date(b.tarih) - new Date(a.tarih)).forEach(m => {
-                list.innerHTML += `<div class="executive-card p-6 border-l-4 border-blue-600">
-                    <div class="flex justify-between items-start mb-4">
-                        <h4 class="font-black uppercase text-lg">${m.ad}</h4>
-                        <span class="text-xs font-black text-blue-500">${m.ücret} TL</span>
-                    </div>
-                    <div class="space-y-2 text-xs text-gray-400">
-                        <p><i class="fas fa-palette mr-2"></i> <b>Boya:</b> ${m.boya}</p>
-                        <p><i class="fas fa-calendar-alt mr-2"></i> <b>Tarih:</b> ${m.tarih}</p>
-                        <p class="bg-black/40 p-3 rounded-lg mt-3 italic leading-relaxed">"${m.not}"</p>
-                    </div>
-                    <button onclick="del('m',${m.id})" class="mt-4 text-[10px] text-red-900 uppercase font-black"><i class="fas fa-trash mr-1"></i> Kartı Sil</button>
-                </div>`;
-            });
+            if(currentData.m) {
+                Object.keys(currentData.m).forEach(id => {
+                    let m = currentData.m[id];
+                    list.innerHTML += `<div class="bg-[#16161a] p-5 rounded-2xl border-l-4 border-blue-600">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-black uppercase text-sm">${m.ad}</h4>
+                            <span class="text-[10px] font-bold text-blue-500">${m.ücret} TL</span>
+                        </div>
+                        <div class="text-[10px] text-gray-500 space-y-1">
+                            <p><b>Boya:</b> ${m.boya}</p>
+                            <p><b>Tarih:</b> ${m.tarih}</p>
+                        </div>
+                        <button onclick="del('m','${id}')" class="mt-3 text-[10px] text-red-900 font-bold">KARTISI SİL</button>
+                    </div>`;
+                });
+            }
         }
-
-        // ACTIONS
-        function showAddR() { document.getElementById('modalR').classList.remove('hidden'); }
-        function showAddM() { document.getElementById('modalM').classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
         function saveR() {
             const ad = document.getElementById('rn').value, islem = document.getElementById('ri').value, saat = document.getElementById('rs').value, tarih = document.getElementById('rt').value;
             if(!ad || !tarih) return;
-            db.r.push({ id: Date.now(), ad, islem, saat, tarih });
-            save(); closeModal('modalR');
+            db.ref('r').push({ ad, islem, saat, tarih });
+            closeModal('modalR');
         }
 
         function saveM() {
-            const ad = document.getElementById('mn').value, boya = document.getElementById('mb').value, ücret = document.getElementById('mu').value, tarih = document.getElementById('mt').value, not = document.getElementById('mnnot').value;
+            const ad = document.getElementById('mn').value, boya = document.getElementById('mb').value, ücret = document.getElementById('mu').value, tarih = document.getElementById('mt').value;
             if(!ad) return;
-            db.m.push({ id: Date.now(), ad, boya, ücret, tarih, not });
-            save(); closeModal('modalM');
+            db.ref('m').push({ ad, boya, ücret, tarih });
+            closeModal('modalM');
         }
 
-        function updPN(idx, val) { db.p[idx].name = val; save(); }
+        function updPN(idx, val) { db.ref('p/'+idx+'/name').set(val); }
         function addPL(idx) {
             const val = document.getElementById('pv-'+idx).value;
             if(!val) return;
-            db.p[idx].logs.push({ txt: 'Avans', val: val });
-            save();
+            db.ref('p/'+idx+'/logs').push({ val: val });
+            document.getElementById('pv-'+idx).value = "";
         }
 
-        function del(key, id) { if(confirm('Emin misin?')) { db[key] = db[key].filter(x => x.id !== id); save(); } }
-        function save() { localStorage.setItem(DB_KEY, JSON.stringify(db)); render(); }
+        function del(path, id) { if(confirm('Silinsin mi?')) db.ref(path+'/'+id).remove(); }
 
     </script>
 </body>
