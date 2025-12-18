@@ -3,187 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yusuf Akdeniz Hair Palace</title>
+    <title>Yusuf Akdeniz Hair Palace | Yönetim</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-        body { font-family: 'Poppins', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: white; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .card-active { border-left: 4px solid #f472b6; }
+        .tab-btn.active { border-bottom: 3px solid #f472b6; color: #f472b6; }
     </style>
 </head>
-<body class="bg-gray-50 pb-24">
+<body class="pb-24">
 
-    <div id="loginPage" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-6">
-        <div class="w-full max-w-sm text-center">
-            <div class="mb-6 inline-block p-5 rounded-full bg-pink-50 text-pink-500 text-4xl shadow-sm">
-                <i class="fas fa-crown"></i>
+    <div id="loginPage" class="fixed inset-0 bg-slate-950 z-[200] flex flex-col items-center justify-center p-8">
+        <div class="mb-10 text-center">
+            <div class="w-24 h-24 bg-gradient-to-tr from-pink-500 to-violet-600 rounded-full flex items-center justify-center mx-auto shadow-2xl mb-4">
+                <i class="fas fa-scissors text-4xl text-white"></i>
             </div>
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">Yusuf Akdeniz</h1>
-            <p class="text-gray-400 text-sm mb-8 italic">Hair Palace Yönetim Sistemi</p>
-            <div class="space-y-4">
-                <input id="user" type="text" placeholder="Kullanıcı Adı" class="w-full p-4 border rounded-2xl outline-none focus:ring-2 focus:ring-pink-300 transition-all">
-                <input id="pass" type="password" placeholder="Şifre" class="w-full p-4 border rounded-2xl outline-none focus:ring-2 focus:ring-pink-300 transition-all">
-                <button onclick="login()" class="w-full bg-pink-500 text-white p-4 rounded-2xl font-bold shadow-lg shadow-pink-200 active:scale-95 transition-all">Giriş Yap</button>
-            </div>
+            <h1 class="text-3xl font-black tracking-tighter uppercase">Yusuf Akdeniz</h1>
+            <p class="text-pink-500 font-medium tracking-widest text-xs uppercase">Hair Palace Panel</p>
+        </div>
+        <div class="w-full max-w-sm space-y-4">
+            <input id="user" type="text" placeholder="Kullanıcı Adı" class="w-full p-4 bg-slate-900 border border-slate-800 rounded-2xl outline-none focus:border-pink-500 transition-all">
+            <input id="pass" type="password" placeholder="Şifre" class="w-full p-4 bg-slate-900 border border-slate-800 rounded-2xl outline-none focus:border-pink-500 transition-all">
+            <button onclick="login()" class="w-full bg-pink-600 hover:bg-pink-500 text-white p-4 rounded-2xl font-bold shadow-lg transition-all active:scale-95">Sisteme Giriş Yap</button>
         </div>
     </div>
 
     <div id="mainContent" class="hidden">
-        <header class="bg-white p-5 shadow-sm sticky top-0 z-50 flex justify-between items-center border-b border-pink-100">
+        <header class="p-6 flex justify-between items-center sticky top-0 bg-slate-950/80 backdrop-blur-md z-50">
             <div>
-                <h1 class="text-lg font-bold text-gray-800">Hair Palace</h1>
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    <span class="text-[10px] text-gray-400 font-medium uppercase tracking-widest" id="activeUser"></span>
-                </div>
+                <h2 class="text-xl font-extrabold uppercase tracking-tight">Hair Palace</h2>
+                <p class="text-[10px] text-pink-500 font-bold" id="activeUserDisplay"></p>
             </div>
-            <button onclick="logout()" class="p-2 text-gray-300 hover:text-red-500 transition-colors"><i class="fas fa-power-off text-xl"></i></button>
+            <div class="flex gap-4">
+                <button onclick="logout()" class="text-slate-500 hover:text-red-500"><i class="fas fa-power-off text-xl"></i></button>
+            </div>
         </header>
 
-        <div class="p-4 space-y-5">
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white p-4 rounded-3xl shadow-sm border-l-4 border-pink-400">
-                    <p class="text-[10px] text-gray-400 font-bold uppercase mb-1 text-center">Bugün Toplam</p>
-                    <p id="ciro" class="text-xl font-black text-gray-800 text-center">0 TL</p>
-                </div>
-                <div class="bg-white p-4 rounded-3xl shadow-sm border-l-4 border-gray-800">
-                    <p class="text-[10px] text-gray-400 font-bold uppercase mb-1 text-center">Aylık Kâr</p>
-                    <p id="kar" class="text-xl font-black text-gray-800 text-center">0 TL</p>
-                </div>
+        <div class="px-6 grid grid-cols-2 gap-4 mb-8">
+            <div class="glass p-4 rounded-3xl">
+                <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Bugün Kasa</p>
+                <p id="toplamKasa" class="text-2xl font-black text-green-400">0 TL</p>
             </div>
-
-            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-700 mb-4 flex items-center">
-                    <i class="fas fa-magic text-pink-500 mr-2"></i> Yeni İşlem Kaydı
-                </h3>
-                <div class="grid grid-cols-1 gap-3 text-sm">
-                    <input id="m_ad" type="text" placeholder="Müşteri Adı Soyadı" class="w-full p-3 bg-gray-50 rounded-xl outline-none focus:bg-white border-transparent focus:border-pink-200 border transition-all">
-                    <div class="flex gap-2">
-                        <select id="m_islem" class="w-1/2 p-3 bg-gray-50 rounded-xl outline-none border-transparent focus:border-pink-200 border">
-                            <option value="Kesim">Saç Kesimi</option>
-                            <option value="Boya">Boyama İşlemi</option>
-                            <option value="Bakım">Saç Bakımı</option>
-                            <option value="Fön">Fön / Maşa</option>
-                            <option value="Gider">DÜKKAN GİDERİ</option>
-                        </select>
-                        <input id="m_ucret" type="number" placeholder="Tutar (TL)" class="w-1/2 p-3 bg-pink-50 rounded-xl font-bold text-pink-600 outline-none">
-                    </div>
-                    <textarea id="m_not" placeholder="Boya numaraları veya özel notlar..." class="w-full p-3 bg-gray-50 rounded-xl outline-none h-20 text-xs"></textarea>
-                    <button onclick="kaydet()" class="w-full bg-gray-800 text-white py-4 rounded-2xl font-bold shadow-md active:scale-95 transition-all">KAYDET</button>
-                </div>
+            <div class="glass p-4 rounded-3xl">
+                <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Randevular</p>
+                <p id="toplamRandevu" class="text-2xl font-black text-pink-400">0</p>
             </div>
-
-            <div class="flex items-center justify-between px-2">
-                <h3 class="font-bold text-gray-700">Günlük Akış</h3>
-                <input type="text" id="arama" onkeyup="ara()" placeholder="Müşteri Ara..." class="text-xs p-2 bg-white border rounded-lg outline-none">
-            </div>
-
-            <div id="liste" class="space-y-3">
-                </div>
         </div>
 
-        <nav class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t p-4 flex justify-around shadow-2xl">
-            <button class="text-pink-500"><i class="fas fa-th-large text-xl"></i></button>
-            <button onclick="alert('Müşteri Veritabanı Hazırlanıyor...')" class="text-gray-300"><i class="fas fa-users text-xl"></i></button>
-            <button onclick="alert('Finansal Raporlar Yakında!')" class="text-gray-300"><i class="fas fa-chart-line text-xl"></i></button>
-        </nav>
+        <div class="px-6 flex gap-6 mb-6 border-b border-slate-800">
+            <button onclick="changeTab('randevu')" id="btn-randevu" class="tab-btn pb-2 text-sm font-bold active">RANDEVULAR</button>
+            <button onclick="changeTab('kasa')" id="btn-kasa" class="tab-btn pb-2 text-sm font-bold text-slate-500">KASA/İŞLEMLER</button>
+            <button onclick="changeTab('arsiv')" id="btn-arsiv" class="tab-btn pb-2 text-sm font-bold text-slate-500">BOYA ARŞİVİ</button>
+        </div>
+
+        <div id="tab-randevu" class="tab-content px-6 space-y-4">
+            <div class="glass p-5 rounded-[2rem] space-y-3">
+                <h3 class="text-sm font-bold text-pink-500"><i class="fas fa-calendar-plus mr-2"></i>Yeni Randevu Oluştur</h3>
+                <input id="r_ad" type="text" placeholder="Müşteri Adı" class="w-full bg-slate-900/50 p-3 rounded-xl border border-slate-700 outline-none">
+                <div class="flex gap-2">
+                    <input id="r_saat" type="time" class="w-1/2 bg-slate-900/50 p-3 rounded-xl border border-slate-700 outline-none">
+                    <input id="r_tarih" type="date" class="w-1/2 bg-slate-900/50 p-3 rounded-xl border border-slate-700 outline-none">
+                </div>
+                <button onclick="randevuEkle()" class="w-full bg-pink-600 p-3 rounded-xl font-bold shadow-lg shadow-pink-900/20">LİSTEYE EKLE</button>
+            </div>
+            <div id="randevuListe" class="space-y-3"></div>
+        </div>
+
+        <div id="tab-kasa" class="tab-content hidden px-6 space-y-4">
+            <div class="glass p-5 rounded-[2rem] space-y-3">
+                <h3 class="text-sm font-bold text-green-500"><i class="fas fa-cash-register mr-2"></i>İşlem/Gider Kaydet</h3>
+                <input id="k_ad" type="text" placeholder="Müşteri veya Gider Adı" class="w-full bg-slate-900/50 p-3 rounded-xl border border-slate-700 outline-none">
+                <div class="flex gap-2">
+                    <select id="k_tip" class="w-1/2 bg-slate-900/50 p-3 rounded-xl border border-slate-700 outline-none">
+                        <option value="gelir">GELİR (+)</option>
+                        <option value="gider">GİDER (-)</option>
+                    </select>
+                    <input id="k_tutar" type="number" placeholder="Tutar TL" class="w-1/2 bg-slate-900/50 p-3 rounded-xl border border-slate-700 outline-none">
+                </div>
+                <textarea id="k_not" placeholder="Boya numaraları veya işlem detayı..." class="w-full bg-slate-900/50 p-3 rounded-xl border border-slate-700 outline-none h-20 text-xs"></textarea>
+                <button onclick="kasaEkle()" class="w-full bg-green-600 p-3 rounded-xl font-bold">KASAYA İŞLE</button>
+            </div>
+            <div id="kasaListe" class="space-y-3"></div>
+        </div>
+
+        <div id="tab-arsiv" class="tab-content hidden px-6">
+            <input type="text" onkeyup="arsivAra()" id="arsivSearch" placeholder="Müşteri isminden boya ara..." class="w-full bg-slate-900 p-4 rounded-2xl border border-slate-800 mb-4 outline-none">
+            <div id="arsivListe" class="space-y-3"></div>
+        </div>
+
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('yusuf_db')) || [];
-        let user = "";
+        let data = JSON.parse(localStorage.getItem('hp_data')) || { randevular: [], kasa: [] };
 
         function login() {
             const u = document.getElementById('user').value;
             const p = document.getElementById('pass').value;
             if(u === 'admin' && p === '1234') {
-                user = u;
-                document.getElementById('loginPage').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-                document.getElementById('activeUser').innerText = u;
-                arayuzGuncelle();
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+                document.getElementById('activeUserDisplay').innerText = "HOŞ GELDİN, YUSUF AKDENİZ";
+                renderAll();
             } else { alert("Hatalı Giriş!"); }
         }
 
-        function kaydet() {
-            const ad = document.getElementById('m_ad').value;
-            const islem = document.getElementById('m_islem').value;
-            const ucret = Number(document.getElementById('m_ucret').value);
-            const not = document.getElementById('m_not').value;
-
-            if(!ad || !ucret) return alert("Lütfen isim ve tutar giriniz!");
-
-            const veri = {
-                id: Date.now(),
-                ad, islem, ucret, not,
-                tarih: new Date().toLocaleDateString('tr-TR'),
-                saat: new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'}),
-                tip: islem === 'Gider' ? 'gider' : 'gelir'
-            };
-
-            db.unshift(veri);
-            localStorage.setItem('yusuf_db', JSON.stringify(db));
-            
-            // Temizlik
-            document.getElementById('m_ad').value = "";
-            document.getElementById('m_ucret').value = "";
-            document.getElementById('m_not').value = "";
-            arayuzGuncelle();
+        function changeTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active', 'text-pink-500'));
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            document.getElementById('btn-' + tabName).classList.add('active', 'text-pink-500');
         }
 
-        function arayuzGuncelle() {
-            const liste = document.getElementById('liste');
-            const ciroGoster = document.getElementById('ciro');
-            const karGoster = document.getElementById('kar');
-            const bugun = new Date().toLocaleDateString('tr-TR');
+        function randevuEkle() {
+            const ad = document.getElementById('r_ad').value;
+            const saat = document.getElementById('r_saat').value;
+            const tarih = document.getElementById('r_tarih').value;
+            if(!ad || !saat) return alert("Bilgileri giriniz!");
+            
+            data.randevular.unshift({ id: Date.now(), ad, saat, tarih: tarih || "Bugün", status: 'bekliyor' });
+            save();
+            document.getElementById('r_ad').value = "";
+        }
 
-            let toplamGelir = 0;
-            let aylikKar = 0;
-            liste.innerHTML = "";
+        function kasaEkle() {
+            const ad = document.getElementById('k_ad').value;
+            const tip = document.getElementById('k_tip').value;
+            const tutar = Number(document.getElementById('k_tutar').value);
+            const not = document.getElementById('k_not').value;
+            if(!ad || !tutar) return alert("Eksik bilgi!");
 
-            db.forEach(item => {
-                if(item.tarih === bugun && item.tip === 'gelir') toplamGelir += item.ucret;
-                
-                if(item.tip === 'gelir') aylikKar += item.ucret;
-                else aylikKar -= item.ucret;
+            data.kasa.unshift({ id: Date.now(), ad, tip, tutar, not, tarih: new Date().toLocaleDateString('tr-TR') });
+            save();
+            document.getElementById('k_ad').value = "";
+            document.getElementById('k_tutar').value = "";
+            document.getElementById('k_not').value = "";
+        }
 
-                liste.innerHTML += `
-                    <div class="bg-white p-4 rounded-3xl shadow-sm border-l-4 ${item.tip === 'gider' ? 'border-red-500' : 'border-pink-500'} flex justify-between items-start">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="font-bold text-gray-800">${item.ad}</span>
-                                <span class="text-[8px] bg-gray-100 px-2 py-0.5 rounded-full text-gray-500">${item.saat}</span>
-                            </div>
-                            <p class="text-xs text-pink-400 font-semibold mb-2">${item.islem}</p>
-                            ${item.not ? `<p class="text-[10px] text-gray-400 italic bg-gray-50 p-2 rounded-lg border border-dashed border-gray-200">${item.not}</p>` : ''}
-                        </div>
-                        <div class="text-right">
-                            <p class="font-black ${item.tip === 'gider' ? 'text-red-500' : 'text-green-600'}">${item.tip === 'gider' ? '-' : ''}${item.ucret} TL</p>
-                            <button onclick="sil(${item.id})" class="text-[10px] text-gray-300 mt-4 hover:text-red-500">KAYDI SİL</button>
-                        </div>
-                    </div>
-                `;
+        function renderAll() {
+            const rListe = document.getElementById('randevuListe');
+            const kListe = document.getElementById('kasaListe');
+            const aListe = document.getElementById('arsivListe');
+            
+            rListe.innerHTML = ""; kListe.innerHTML = ""; aListe.innerHTML = "";
+            let kasaTop = 0;
+
+            data.randevular.forEach(r => {
+                rListe.innerHTML += `<div class="glass p-4 rounded-2xl flex justify-between items-center border-l-4 border-pink-500">
+                    <div><p class="font-bold text-sm">${r.ad}</p><p class="text-[10px] text-slate-400">${r.tarih} | ${r.saat}</p></div>
+                    <button onclick="sil('r', ${r.id})" class="text-slate-600"><i class="fas fa-trash"></i></button>
+                </div>`;
             });
 
-            ciroGoster.innerText = toplamGelir + " TL";
-            karGoster.innerText = aylikKar + " TL";
+            data.kasa.forEach(k => {
+                if(k.tip === 'gelir') kasaTop += k.tutar; else kasaTop -= k.tutar;
+                kListe.innerHTML += `<div class="glass p-4 rounded-2xl flex justify-between items-start border-l-4 ${k.tip === 'gelir' ? 'border-green-500' : 'border-red-500'}">
+                    <div><p class="font-bold text-sm">${k.ad}</p><p class="text-[10px] text-slate-400">${k.tarih}</p><p class="text-[10px] text-pink-400 mt-1">${k.not || ''}</p></div>
+                    <p class="font-bold ${k.tip === 'gelir' ? 'text-green-400' : 'text-red-400'}">${k.tip === 'gelir' ? '+' : '-'}${k.tutar} TL</p>
+                </div>`;
+                
+                if(k.not) {
+                    aListe.innerHTML += `<div class="glass p-4 rounded-2xl">
+                        <p class="font-bold text-pink-500 text-sm">${k.ad}</p>
+                        <p class="text-xs text-slate-300 mt-2">${k.not}</p>
+                        <p class="text-[8px] text-slate-500 mt-2 uppercase">${k.tarih}</p>
+                    </div>`;
+                }
+            });
+
+            document.getElementById('toplamKasa').innerText = kasaTop + " TL";
+            document.getElementById('toplamRandevu').innerText = data.randevular.length;
         }
 
-        function ara() {
-            let kelime = document.getElementById('arama').value.toLowerCase();
-            let kartlar = document.getElementById('liste').children;
-            for (let kart of kartlar) {
-                let isim = kart.querySelector('span.font-bold').innerText.toLowerCase();
-                kart.style.display = isim.includes(kelime) ? "flex" : "none";
-            }
+        function sil(tip, id) {
+            if(!confirm("Silmek istediğine emin misin?")) return;
+            if(tip === 'r') data.randevular = data.randevular.filter(x => x.id !== id);
+            save();
         }
 
-        function sil(id) {
-            if(confirm("Bu işlemi silmek istediğinize emin misiniz?")) {
-                db = db.filter(x => x.id !== id);
-                localStorage.setItem('yusuf_db', JSON.stringify(db));
-                arayuzGuncelle();
-            }
+        function save() {
+            localStorage.setItem('hp_data', JSON.stringify(data));
+            renderAll();
         }
 
         function logout() { location.reload(); }
