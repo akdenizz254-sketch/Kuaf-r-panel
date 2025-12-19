@@ -3,86 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yusuf Akdeniz | Admin Panel</title>
+    <title>Yusuf Akdeniz | Executive v9</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #f4f7fe; color: #1b2559; margin: 0; overflow: hidden; }
-        .sidebar { width: 260px; height: 100vh; background: #fff; border-right: 1px solid #e2e8f0; position: fixed; left: 0; top: 0; transition: 0.3s; z-index: 1000; }
-        .main-content { margin-left: 260px; height: 100vh; overflow-y: auto; padding: 25px; transition: 0.3s; }
-        .nav-item { padding: 15px 25px; display: flex; items-center; gap: 12px; cursor: pointer; color: #a3aed0; font-weight: 600; border-radius: 12px; margin: 5px 15px; transition: 0.2s; }
-        .nav-item:hover { background: #f4f7fe; color: #4318ff; }
-        .nav-active { background: #f4f7fe; color: #4318ff; }
-        .nav-item i { font-size: 18px; }
-        .stat-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.02); }
-        .btn-add { background: #4318ff; color: white; padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 13px; }
-        @media (max-width: 768px) { .sidebar { left: -260px; } .sidebar.active { left: 0; } .main-content { margin-left: 0; } }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #f4f7fe; margin: 0; }
+        /* SOL SÜTUNLAR (SIDEBAR) */
+        .sidebar { width: 240px; height: 100vh; background: #fff; border-right: 1px solid #e2e8f0; position: fixed; left: 0; top: 0; z-index: 1000; overflow-y: auto; }
+        .main-content { margin-left: 240px; padding: 20px; min-height: 100vh; }
+        .nav-item { padding: 12px 20px; display: flex; align-items: center; gap: 10px; cursor: pointer; color: #a3aed0; font-weight: 600; border-radius: 10px; margin: 4px 12px; transition: 0.2s; font-size: 14px; }
+        .nav-item:hover, .nav-active { background: #f4f7fe; color: #4318ff; }
+        .stat-card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        /* MOBİL AYARI */
+        @media (max-width: 768px) { 
+            .sidebar { width: 180px; font-size: 12px; } 
+            .main-content { margin-left: 180px; padding: 10px; }
+            .nav-item { padding: 10px 12px; margin: 4px 8px; gap: 8px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="sidebar" id="sidebar">
-        <div class="p-8">
-            <h1 class="text-2xl font-extrabold tracking-tight text-[#2b3674] italic">ADMIN <span class="text-[#4318ff]">PANEL</span></h1>
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[3px]">Yusuf Akdeniz</p>
+    <div class="sidebar">
+        <div class="p-6">
+            <h1 class="text-xl font-extrabold text-[#2b3674] italic">ADMIN <span class="text-[#4318ff]">PANEL</span></h1>
         </div>
-        <nav class="mt-4">
-            <div onclick="tab('dash')" id="n-dash" class="nav-item nav-active"><i class="fas fa-th-large"></i> Dashboard</div>
-            <div onclick="tab('must')" id="n-must" class="nav-item"><i class="fas fa-users"></i> Müşteriler</div>
-            <div onclick="tab('rand')" id="n-rand" class="nav-item"><i class="fas fa-calendar-alt"></i> Randevular</div>
-            <div onclick="tab('stok')" id="n-stok" class="nav-item"><i class="fas fa-boxes"></i> Stok</div>
-            <div onclick="tab('kasa')" id="n-kasa" class="nav-item"><i class="fas fa-wallet"></i> Kasa</div>
-            <div onclick="tab('pers')" id="n-pers" class="nav-item"><i class="fas fa-user-friends"></i> Çalışanlar</div>
-            <div onclick="tab('rapo')" id="n-rapo" class="nav-item"><i class="fas fa-chart-line"></i> Raporlar</div>
-            <div onclick="tab('ayar')" id="n-ayar" class="nav-item"><i class="fas fa-cog"></i> Ayarlar</div>
+        <nav>
+            <div onclick="tab('dash')" id="n-dash" class="nav-item nav-active"><i class="fas fa-th-large w-5"></i> Dashboard</div>
+            <div onclick="tab('must')" id="n-must" class="nav-item"><i class="fas fa-users w-5"></i> Müşteriler</div>
+            <div onclick="tab('rand')" id="n-rand" class="nav-item"><i class="fas fa-calendar-alt w-5"></i> Randevular</div>
+            <div onclick="tab('stok')" id="n-stok" class="nav-item"><i class="fas fa-boxes w-5"></i> Stok</div>
+            <div onclick="tab('kasa')" id="n-kasa" class="nav-item"><i class="fas fa-wallet w-5"></i> Kasa</div>
+            <div onclick="tab('pers')" id="n-pers" class="nav-item"><i class="fas fa-user-friends w-5"></i> Çalışanlar</div>
+            <div onclick="tab('rapo')" id="n-rapo" class="nav-item"><i class="fas fa-chart-line w-5"></i> Raporlar</div>
+            <div onclick="tab('ayar')" id="n-ayar" class="nav-item"><i class="fas fa-cog w-5"></i> Ayarlar</div>
         </nav>
     </div>
 
     <div class="main-content">
-        <div id="v-dash" class="view space-y-6">
-            <h2 class="text-2xl font-bold text-[#2b3674]">Genel Bakış</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div id="v-dash" class="view">
+            <h2 class="text-xl font-bold text-[#2b3674] mb-4 uppercase">Genel Bakış</h2>
+            <div class="grid grid-cols-1 gap-4">
                 <div class="stat-card">
-                    <p class="text-sm text-gray-400">Günlük Randevu</p>
-                    <h3 id="dash-rand" class="text-2xl font-bold text-[#2b3674]">0</h3>
+                    <p class="text-xs text-gray-400 font-bold">GÜNLÜK RANDEVU</p>
+                    <h3 id="d-r" class="text-2xl font-black text-[#2b3674]">0</h3>
                 </div>
                 <div class="stat-card">
-                    <p class="text-sm text-gray-400">Toplam Müşteri</p>
-                    <h3 id="dash-must" class="text-2xl font-bold text-[#2b3674]">0</h3>
+                    <p class="text-xs text-gray-400 font-bold">TOPLAM MÜŞTERİ</p>
+                    <h3 id="d-m" class="text-2xl font-black text-[#2b3674]">0</h3>
                 </div>
                 <div class="stat-card border-l-4 border-green-500">
-                    <p class="text-sm text-gray-400">Günlük Kasa</p>
-                    <h3 id="dash-kasa" class="text-2xl font-bold text-green-600">₺0</h3>
+                    <p class="text-xs text-gray-400 font-bold">GÜNLÜK KASA</p>
+                    <h3 id="d-k" class="text-2xl font-black text-green-600">₺0</h3>
                 </div>
             </div>
         </div>
 
         <div id="v-must" class="view hidden">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-[#2b3674]">Müşteri Listesi</h2>
-                <button onclick="showM()" class="btn-add">+ Yeni Müşteri Ekle</button>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-[#2b3674]">MÜŞTERİLER</h2>
+                <button onclick="addM()" class="bg-[#4318ff] text-white px-3 py-2 rounded-lg text-xs font-bold">+ EKLE</button>
             </div>
-            <div class="bg-white rounded-3xl overflow-hidden shadow-sm">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-[#f4f7fe]">
-                        <tr class="text-[12px] text-gray-400 uppercase">
-                            <th class="p-5">Ad Soyad</th>
-                            <th class="p-5">Boya / Not</th>
-                            <th class="p-5">Ücret</th>
-                            <th class="p-5">İşlem</th>
-                        </tr>
+            <div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-gray-50 uppercase text-gray-400">
+                        <tr><th class="p-3">Ad</th><th class="p-3">Boya</th><th class="p-3">Ücret</th></tr>
                     </thead>
-                    <tbody id="mustTable" class="text-sm"></tbody>
+                    <tbody id="mTable"></tbody>
                 </table>
             </div>
-        </div>
-
-        <div id="v-pers" class="view hidden">
-            <h2 class="text-2xl font-bold text-[#2b3674] mb-6">Çalışan Masası</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="persList"></div>
         </div>
     </div>
 
@@ -95,35 +87,35 @@
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
             document.getElementById('v-'+t).classList.remove('hidden');
-            document.getElementById('n-'+t).classList.add('nav-active');
+            document.getElementById('n text-'+t).classList.add('nav-active');
         }
 
         db.ref('/').on('value', (snap) => {
-            const data = snap.val() || {};
-            render(data);
-        });
+            const data = snap.val() || { m: {}, r: {} };
+            const mList = document.getElementById('mTable');
+            mList.innerHTML = "";
+            let totalM = 0, totalK = 0;
 
-        function render(data) {
-            // Müşteri Tablosunu Render Et
-            const t = document.getElementById('mustTable');
-            t.innerHTML = "";
-            let mCount = 0;
             if(data.m) {
                 Object.keys(data.m).forEach(id => {
-                    const m = data.m[id]; mCount++;
-                    t.innerHTML += `<tr class="border-b border-gray-50">
-                        <td class="p-5 font-bold">${m.ad}</td>
-                        <td class="p-5 text-gray-500">${m.boya || '-'}</td>
-                        <td class="p-5 font-bold text-green-600">₺${m.ücret || 0}</td>
-                        <td class="p-5"><button onclick="del('m','${id}')" class="text-red-500"><i class="fas fa-trash"></i></button></td>
+                    const m = data.m[id]; totalM++; totalK += parseInt(m.ücret || 0);
+                    mList.innerHTML += `<tr class="border-t">
+                        <td class="p-3 font-bold">${m.ad}</td>
+                        <td class="p-3 text-gray-500">${m.boya || '-'}</td>
+                        <td class="p-3 text-green-600 font-bold">₺${m.ücret}</td>
                     </tr>`;
                 });
             }
-            document.getElementById('dash-must').innerText = mCount;
-            // Diğer render işlemleri buraya...
-        }
+            document.getElementById('d-m').innerText = totalM;
+            document.getElementById('d-k').innerText = "₺" + totalK;
+        });
 
-        function del(p, id) { if(confirm('Silinsin mi?')) db.ref(p+'/'+id).remove(); }
+        function addM() {
+            const ad = prompt("Müşteri Adı:");
+            const boya = prompt("Boya No:");
+            const ücret = prompt("Ücret:");
+            if(ad && ücret) db.ref('m').push({ ad, boya, ücret });
+        }
     </script>
 </body>
 </html>
