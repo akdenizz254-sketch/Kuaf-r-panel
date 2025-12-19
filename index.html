@@ -1,90 +1,108 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <title>YUSUFAKDENİZ HAIR PALACE</title>
-  <style>
-    body { font-family: Arial; background:#f4f4f4; padding:20px }
-    h2 { margin-top:30px }
-    input, button { padding:8px; margin:5px }
-    table { border-collapse: collapse; width:100%; background:#fff }
-    th, td { border:1px solid #ccc; padding:8px; text-align:left }
-    th { background:#eee }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YUSUF AKDENIZ MASTER PANEL</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<style>
+body{background:#f4f7fe;font-family:Inter,sans-serif}
+.sidebar{width:280px;position:fixed;height:100vh;background:#fff;border-right:1px solid #eee}
+.main{margin-left:280px;padding:40px}
+.nav{padding:20px}
+.nav div{padding:15px 20px;margin:5px;border-radius:14px;font-weight:800;color:#a3aed0;cursor:pointer}
+.nav div.active,.nav div:hover{background:#f4f7fe;color:#4318ff}
+.card{background:#fff;border-radius:20px;padding:25px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+table{width:100%;border-collapse:separate;border-spacing:0 8px}
+th{font-size:11px;text-transform:uppercase;color:#a3aed0}
+td{background:#fff;padding:14px;border:1px solid #f4f7fe;text-align:center;font-weight:700}
+.booked{background:#fb923c;color:#fff;border-radius:10px}
+</style>
 </head>
+
 <body>
 
-<h1>YUSUFAKDENİZ HAIR PALACE</h1>
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div class="p-8 text-center border-b">
+        <h1 class="font-black text-xl">PALACE <span class="text-blue-600">CLOUD</span></h1>
+    </div>
+    <div class="nav">
+        <div onclick="tab('dash')" id="n-dash" class="active">Dashboard</div>
+        <div onclick="tab('rand')" id="n-rand">Randevu Sistemi</div>
+        <div onclick="tab('kasa')" id="n-kasa">Kasa</div>
+    </div>
+</div>
 
-<h2>🔐 Giriş</h2>
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Şifre">
-<button onclick="login()">Giriş Yap</button>
+<!-- MAIN -->
+<div class="main">
 
-<h2>📅 Randevu Ekle</h2>
-<input id="r_tarih" placeholder="Tarih">
-<input id="r_saat" placeholder="Saat">
-<input id="r_musteri" placeholder="Müşteri">
-<button onclick="randevuEkle()">Ekle</button>
+<!-- DASHBOARD -->
+<div id="v-dash">
+    <h2 class="text-3xl font-black mb-8">Genel Durum</h2>
+    <div class="grid grid-cols-3 gap-6">
+        <div class="card"><p class="text-xs">Toplam Gelir</p><h3 id="d-gelir" class="text-3xl text-green-500 font-black">₺0</h3></div>
+        <div class="card"><p class="text-xs">Toplam Gider</p><h3 id="d-gider" class="text-3xl text-red-500 font-black">₺0</h3></div>
+        <div class="card"><p class="text-xs">Net Kâr</p><h3 id="d-net" class="text-3xl text-blue-600 font-black">₺0</h3></div>
+    </div>
+</div>
 
-<h2>💰 Gelir Ekle</h2>
-<input id="g_aciklama" placeholder="Açıklama">
-<input id="g_tutar" placeholder="Tutar">
-<button onclick="gelirEkle()">Ekle</button>
+<!-- RANDEVU -->
+<div id="v-rand" class="hidden">
+    <h2 class="text-3xl font-black mb-8">Haftalık Randevu Planı</h2>
 
-<h2>💸 Gider Ekle</h2>
-<input id="d_aciklama" placeholder="Açıklama">
-<input id="d_tutar" placeholder="Tutar">
-<button onclick="giderEkle()">Ekle</button>
+    <table>
+        <thead>
+            <tr>
+                <th>Saat</th>
+                <th id="d0"></th><th id="d1"></th><th id="d2"></th>
+                <th id="d3"></th><th id="d4"></th><th id="d5"></th><th id="d6"></th>
+            </tr>
+        </thead>
+        <tbody id="week"></tbody>
+    </table>
+</div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+<!-- KASA -->
+<div id="v-kasa" class="hidden">
+    <h2 class="text-3xl font-black mb-6">Gelir / Gider</h2>
+    <div class="grid grid-cols-2 gap-6">
+        <div class="card">
+            <input id="g-ad" placeholder="Gelir açıklama" class="w-full mb-3 p-3 border rounded">
+            <input id="g-tutar" type="number" placeholder="₺" class="w-full mb-3 p-3 border rounded">
+            <button onclick="saveMoney('gelir')" class="w-full bg-green-500 text-white p-3 rounded">Gelir Ekle</button>
+        </div>
+        <div class="card">
+            <input id="gi-ad" placeholder="Gider açıklama" class="w-full mb-3 p-3 border rounded">
+            <input id="gi-tutar" type="number" placeholder="₺" class="w-full mb-3 p-3 border rounded">
+            <button onclick="saveMoney('gider')" class="w-full bg-red-500 text-white p-3 rounded">Gider Ekle</button>
+        </div>
+    </div>
+</div>
 
-const firebaseConfig = {
-  apiKey: "BURAYA_YAZILACAK",
-  authDomain: "BURAYA_YAZILACAK",
-  projectId: "BURAYA_YAZILACAK"
-};
+</div>
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+<script>
+const firebaseConfig={databaseURL:"https://yusufakdenizhairpalace-c6884-default-rtdb.europe-west1.firebasedatabase.app/"}
+firebase.initializeApp(firebaseConfig)
+const db=firebase.database()
 
-window.login = () => {
-  signInWithEmailAndPassword(auth,
-    email.value,
-    password.value
-  ).then(() => alert("Giriş başarılı"))
-    .catch(e => alert(e.message));
-};
+function tab(t){
+['dash','rand','kasa'].forEach(x=>{
+document.getElementById('v-'+x).classList.add('hidden')
+document.getElementById('n-'+x).classList.remove('active')
+})
+document.getElementById('v-'+t).classList.remove('hidden')
+document.getElementById('n-'+t).classList.add('active')
+}
 
-window.randevuEkle = async () => {
-  await addDoc(collection(db,"randevular"),{
-    tarih:r_tarih.value,
-    saat:r_saat.value,
-    musteri:r_musteri.value
-  });
-  alert("Randevu eklendi");
-};
-
-window.gelirEkle = async () => {
-  await addDoc(collection(db,"gelir"),{
-    aciklama:g_aciklama.value,
-    tutar:g_tutar.value
-  });
-  alert("Gelir eklendi");
-};
-
-window.giderEkle = async () => {
-  await addDoc(collection(db,"gider"),{
-    aciklama:d_aciklama.value,
-    tutar:d_tutar.value
-  });
-  alert("Gider eklendi");
-};
-</script>
-
-</body>
-</html>
+/* RANDEVU */
+function getWeek(){
+const days=[]
+const now=new Date()
+const monday=new Date
