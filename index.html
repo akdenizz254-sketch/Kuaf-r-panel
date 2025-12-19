@@ -3,41 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>YUSUF AKDENIZ MASTER PANEL v20</title>
+    <title>YUSUF AKDENIZ MASTER PANEL v21</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         :root { --sidebar-w: 280px; --primary: #4318ff; --dark: #0b1437; --light-bg: #f4f7fe; }
         * { margin:0; padding:0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--light-bg); color: #1b2559; overflow-x: hidden; }
 
         /* GİRİŞ EKRANI */
-        #login-screen { position: fixed; inset: 0; background: var(--dark); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: 0.5s; }
+        #login-screen { position: fixed; inset: 0; background: var(--dark); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .login-card { background: #fff; padding: 40px; border-radius: 30px; width: 90%; max-width: 400px; text-align: center; }
 
-        /* SIDEBAR & CONTENT */
-        .sidebar { width: var(--sidebar-w); height: 100vh; background: #fff; position: fixed; left: 0; top: 0; z-index: 1000; border-right: 1px solid #e9edf7; }
-        .main-content { margin-left: var(--sidebar-w); padding: 40px; }
-        .nav-link { margin: 4px 20px; padding: 16px 20px; display: flex; align-items: center; gap: 15px; color: #a3aed0; font-weight: 700; border-radius: 15px; cursor: pointer; }
+        /* SIDEBAR */
+        .sidebar { width: var(--sidebar-w); height: 100vh; background: #fff; position: fixed; left: 0; top: 0; z-index: 1000; border-right: 1px solid #e9edf7; transition: 0.3s; }
+        .nav-link { margin: 4px 20px; padding: 15px 20px; display: flex; align-items: center; gap: 12px; color: #a3aed0; font-weight: 700; border-radius: 12px; cursor: pointer; }
         .nav-active { background: var(--light-bg); color: var(--primary); }
 
-        /* HAFTALIK TABLO */
-        .week-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; min-width: 1200px; }
-        .day-col { background: #fff; border-radius: 15px; min-height: 500px; border: 1px solid #e9edf7; }
-        .day-title { background: #f8faff; padding: 12px; text-align: center; font-weight: 800; color: var(--primary); border-radius: 15px 15px 0 0; border-bottom: 1px solid #e9edf7; font-size: 12px; }
-        .rand-item { background: #fff1e6; border-left: 4px solid #ff9100; padding: 10px; margin: 8px; border-radius: 8px; font-size: 11px; font-weight: 700; }
+        /* HAFTALIK RANDEVU SİSTEMİ (SÜTUNLAR) */
+        .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; min-width: 1200px; }
+        .day-column { background: #fff; border-radius: 15px; min-height: 500px; border: 1px solid #e9edf7; }
+        .day-header { padding: 12px; text-align: center; font-weight: 800; border-bottom: 2px solid var(--light-bg); font-size: 11px; color: var(--primary); text-transform: uppercase; }
+        .appointment-box { background: #fff1e6; border-left: 4px solid #ff9100; padding: 8px; margin: 6px; border-radius: 6px; font-size: 11px; font-weight: 700; position: relative; }
 
-        /* DİĞER */
-        .glass-card { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(112, 144, 176, 0.1); }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        /* İÇERİK */
+        .main-content { margin-left: var(--sidebar-w); padding: 40px; transition: 0.3s; }
+        .glass-card { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(112, 144, 176, 0.05); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 5000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .hidden { display: none !important; }
 
         @media (max-width: 1024px) {
-            .sidebar { width: 85px; } .sidebar span, .sidebar h1 { display: none; }
-            .main-content { margin-left: 85px; padding: 15px; }
+            .sidebar { width: 80px; } .sidebar span, .sidebar h1 { display: none; }
+            .main-content { margin-left: 80px; padding: 15px; }
         }
     </style>
 </head>
@@ -45,100 +45,112 @@
 
     <div id="login-screen">
         <div class="login-card shadow-2xl">
-            <h1 class="text-3xl font-black italic mb-2">PALACE <span class="text-blue-600 text-2xl">CLOUD</span></h1>
-            <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase mb-8">Yusuf Akdeniz Master Panel</p>
-            <input type="password" id="entry-pass" placeholder="Şifre" class="w-full p-4 bg-slate-100 rounded-2xl mb-4 text-center font-bold text-xl outline-none focus:ring-2 ring-blue-500">
-            <button onclick="handleLogin()" class="w-full bg-blue-600 text-white p-4 rounded-2xl font-black shadow-lg">GİRİŞ YAP</button>
+            <h1 class="text-3xl font-black italic mb-2">PALACE <span class="text-blue-600">CLOUD</span></h1>
+            <p class="text-slate-400 text-[10px] font-bold tracking-[3px] uppercase mb-8">YUSUF AKDENİZ v21</p>
+            <input type="password" id="pass-code" placeholder="PIN Kodu" class="w-full p-4 bg-slate-100 rounded-2xl mb-4 text-center font-bold text-2xl outline-none focus:ring-4 ring-blue-100">
+            <button onclick="checkLogin()" class="w-full bg-blue-600 text-white p-4 rounded-2xl font-black shadow-lg">PANELİ AÇ</button>
         </div>
     </div>
 
-    <div id="app-wrapper" class="hidden">
+    <div id="main-app" class="hidden">
         <div class="sidebar">
-            <div class="p-10 text-center"><h1 class="text-xl font-black">PALACE <span class="text-blue-600">v20</span></h1></div>
-            <div class="nav-container">
-                <div onclick="tab('dash')" id="n-dash" class="nav-link nav-active"><i class="fa-solid fa-house"></i> <span>Dashboard</span></div>
-                <div onclick="tab('rand')" id="n-rand" class="nav-link"><i class="fa-solid fa-calendar-week"></i> <span>Haftalık Ajanda</span></div>
-                <div onclick="tab('must')" id="n-must" class="nav-link"><i class="fa-solid fa-users"></i> <span>Müşteriler</span></div>
-                <div onclick="tab('stok')" id="n-stok" class="nav-link"><i class="fa-solid fa-box"></i> <span>Stok Takibi</span></div>
-                <div onclick="tab('pers')" id="n-pers" class="nav-link"><i class="fa-solid fa-user-tie"></i> <span>Personel</span></div>
-                <div onclick="tab('kasa')" id="n-kasa" class="nav-link"><i class="fa-solid fa-vault"></i> <span>Kasa</span></div>
-                <div onclick="tab('not')" id="n-not" class="nav-link"><i class="fa-solid fa-sticky-note"></i> <span>Notlar</span></div>
-            </div>
+            <div class="p-10 text-center border-b mb-4"><h1 class="text-xl font-black italic">PALACE <span class="text-blue-600">CLOUD</span></h1></div>
+            <div onclick="tab('dash')" id="n-dash" class="nav-link nav-active"><i class="fa-solid fa-house"></i> <span>Dashboard</span></div>
+            <div onclick="tab('must')" id="n-must" class="nav-link"><i class="fa-solid fa-users"></i> <span>Müşteriler</span></div>
+            <div onclick="tab('rand')" id="n-rand" class="nav-link"><i class="fa-solid fa-calendar-week"></i> <span>Randevu Sistemi</span></div>
+            <div onclick="tab('stok')" id="n-stok" class="nav-link"><i class="fa-solid fa-box"></i> <span>Stok Takibi</span></div>
+            <div onclick="tab('pers')" id="n-pers" class="nav-link"><i class="fa-solid fa-user-tie"></i> <span>Personel</span></div>
+            <div onclick="tab('kasa')" id="n-kasa" class="nav-link"><i class="fa-solid fa-vault"></i> <span>Kasa/Muhasebe</span></div>
+            <div onclick="tab('not')" id="n-not" class="nav-link"><i class="fa-solid fa-sticky-note"></i> <span>Notlar</span></div>
         </div>
 
         <div class="main-content">
             <div id="v-dash" class="view space-y-6">
-                <div class="flex justify-between items-center"><h2 class="text-3xl font-black">Genel Durum</h2><div id="clock" class="text-xl font-black"></div></div>
+                <div class="flex justify-between items-center"><h2 class="text-3xl font-black">Genel Durum</h2><div id="clock" class="text-xl font-black text-blue-600"></div></div>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="glass-card"><p class="text-xs font-bold text-slate-400">TOPLAM CİRO</p><h3 id="d-ciro" class="text-3xl font-black text-blue-600">₺0</h3></div>
+                    <div class="glass-card"><p class="text-xs font-bold text-slate-400">GÜNLÜK CİRO</p><h3 id="d-ciro" class="text-3xl font-black text-blue-600">₺0</h3></div>
                     <div class="glass-card"><p class="text-xs font-bold text-slate-400">NET KASA</p><h3 id="d-net" class="text-3xl font-black text-green-500">₺0</h3></div>
                     <div class="glass-card"><p class="text-xs font-bold text-slate-400">MÜŞTERİ</p><h3 id="d-must" class="text-3xl font-black">0</h3></div>
                     <div class="glass-card"><p class="text-xs font-bold text-slate-400">RANDEVU</p><h3 id="d-rand" class="text-3xl font-black text-orange-500">0</h3></div>
                 </div>
-                <div class="glass-card">
-                    <h4 class="font-black mb-4">Son Müşteriler</h4>
-                    <div id="recent-list" class="space-y-3"></div>
-                </div>
-            </div>
-
-            <div id="v-rand" class="view hidden">
-                <div class="flex justify-between items-center mb-8"><h2 class="text-3xl font-black">Haftalık Ajanda</h2><button onclick="openModal('r-modal')" class="bg-orange-500 text-white px-6 py-3 rounded-xl font-bold">+ Yeni Randevu</button></div>
-                <div class="overflow-x-auto pb-10">
-                    <div class="week-container">
-                        <div class="day-col"><div class="day-title">Pazartesi</div><div id="day-1" class="p-1"></div></div>
-                        <div class="day-col"><div class="day-title">Salı</div><div id="day-2" class="p-1"></div></div>
-                        <div class="day-col"><div class="day-title">Çarşamba</div><div id="day-3" class="p-1"></div></div>
-                        <div class="day-col"><div class="day-title">Perşembe</div><div id="day-4" class="p-1"></div></div>
-                        <div class="day-col"><div class="day-title">Cuma</div><div id="day-5" class="p-1"></div></div>
-                        <div class="day-col"><div class="day-title">Cumartesi</div><div id="day-6" class="p-1"></div></div>
-                        <div class="day-col"><div class="day-title">Pazar</div><div id="day-0" class="p-1"></div></div>
-                    </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="glass-card"><h4 class="font-black mb-4 border-b pb-2">Son İşlemler</h4><div id="recent-list" class="space-y-3"></div></div>
+                    <div class="glass-card bg-[#111c44] text-white"><h4 class="font-black mb-4 border-b border-white/10 pb-2">Hızlı Ajanda</h4><div id="dash-rand" class="space-y-2 opacity-80"></div></div>
                 </div>
             </div>
 
             <div id="v-must" class="view hidden">
-                <div class="flex justify-between items-center mb-8"><h2 class="text-3xl font-black">Müşteri Portföyü</h2><button onclick="openModal('m-modal')" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold">+ Yeni Müşteri</button></div>
-                <div class="bg-white rounded-2xl overflow-hidden shadow-sm">
+                <div class="flex justify-between items-center mb-8"><h2 class="text-3xl font-black">Müşteriler</h2><button onclick="openModal('m-modal')" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black">+ Yeni Kayıt</button></div>
+                <div class="overflow-x-auto bg-white rounded-3xl shadow-sm">
                     <table class="w-full text-left">
-                        <thead class="bg-slate-50 text-slate-400 text-xs font-bold uppercase"><tr><th class="p-5">İsim</th><th class="p-5">İşlem</th><th class="p-5">Ücret</th><th class="p-5">Aksiyon</th></tr></thead>
-                        <tbody id="m-table"></tbody>
+                        <thead class="bg-slate-50 text-slate-400 text-[11px] font-bold uppercase"><tr><th class="p-5">İsim</th><th class="p-5">İşlem</th><th class="p-5">Boya/Not</th><th class="p-5">Ücret</th><th class="p-5">Aksiyon</th></tr></thead>
+                        <tbody id="m-table" class="font-bold text-sm"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="v-stok" class="view hidden"><div class="flex justify-between mb-8"><h2 class="text-3xl font-black">Stok</h2><button onclick="openModal('s-modal')" class="bg-slate-800 text-white px-6 py-3 rounded-xl font-bold">Ürün Ekle</button></div><div id="s-grid" class="grid grid-cols-1 md:grid-cols-4 gap-6"></div></div>
-
-            <div id="v-pers" class="view hidden"><h2 class="text-3xl font-black mb-8">Personel Masaları</h2><div id="p-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div></div>
-
-            <div id="v-kasa" class="view hidden">
-                <h2 class="text-3xl font-black mb-8">Muhasebe</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div class="glass-card border-l-8 border-green-500"><h4 class="font-black mb-4">GELİR</h4><input id="f-g-ad" placeholder="Kaynak" class="w-full p-3 bg-slate-50 rounded-lg mb-2"><input id="f-g-tutar" type="number" placeholder="Tutar" class="w-full p-3 bg-slate-50 rounded-lg mb-2"><button onclick="saveF('gelir')" class="w-full bg-green-500 text-white p-3 rounded-lg font-bold">EKLE</button></div>
-                    <div class="glass-card border-l-8 border-red-500"><h4 class="font-black mb-4">GİDER</h4><input id="f-gi-ad" placeholder="Kalem" class="w-full p-3 bg-slate-50 rounded-lg mb-2"><input id="f-gi-tutar" type="number" placeholder="Tutar" class="w-full p-3 bg-slate-50 rounded-lg mb-2"><button onclick="saveF('gider')" class="w-full bg-red-500 text-white p-3 rounded-lg font-bold">ÇIK</button></div>
+            <div id="v-rand" class="view hidden">
+                <div class="flex justify-between items-center mb-8"><h2 class="text-3xl font-black">Haftalık Plan</h2><button onclick="openModal('r-modal')" class="bg-orange-500 text-white px-6 py-3 rounded-xl font-bold">+ Randevu</button></div>
+                <div class="overflow-x-auto pb-10">
+                    <div class="week-grid">
+                        <div class="day-column"><div class="day-header">Pazartesi</div><div id="day-1" class="p-1"></div></div>
+                        <div class="day-column"><div class="day-header">Salı</div><div id="day-2" class="p-1"></div></div>
+                        <div class="day-column"><div class="day-header">Çarşamba</div><div id="day-3" class="p-1"></div></div>
+                        <div class="day-column"><div class="day-header">Perşembe</div><div id="day-4" class="p-1"></div></div>
+                        <div class="day-column"><div class="day-header">Cuma</div><div id="day-5" class="p-1"></div></div>
+                        <div class="day-column"><div class="day-header">Cumartesi</div><div id="day-6" class="p-1"></div></div>
+                        <div class="day-column"><div class="day-header">Pazar</div><div id="day-0" class="p-1"></div></div>
+                    </div>
                 </div>
-                <div id="f-list" class="space-y-2"></div>
             </div>
 
-            <div id="v-not" class="view hidden"><h2 class="text-3xl font-black mb-6">Notlar</h2><textarea id="shop-note" onchange="saveNote()" class="w-full h-96 p-8 rounded-2xl glass-card outline-none" placeholder="Buraya yaz..."></textarea></div>
+            <div id="v-stok" class="view hidden">
+                <div class="flex justify-between mb-8"><h2 class="text-3xl font-black">Stok</h2><button onclick="openModal('s-modal')" class="bg-slate-800 text-white px-6 py-3 rounded-xl font-bold">Ürün Ekle</button></div>
+                <div id="s-grid" class="grid grid-cols-1 md:grid-cols-4 gap-6"></div>
+            </div>
+
+            <div id="v-pers" class="view hidden">
+                <h2 class="text-3xl font-black mb-8">Personeller</h2>
+                <div id="p-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </div>
+
+            <div id="v-kasa" class="view hidden">
+                <h2 class="text-3xl font-black mb-8">Kasa Muhasebe</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="glass-card border-l-8 border-green-500"><h4 class="font-black mb-4">GELİR</h4><input id="f-g-ad" placeholder="Kaynak" class="w-full p-3 bg-slate-50 rounded-lg mb-2"><input id="f-g-tutar" type="number" placeholder="Tutar" class="w-full p-3 bg-slate-50 rounded-lg mb-4"><button onclick="saveF('gelir')" class="w-full bg-green-500 text-white p-3 rounded-lg font-bold">EKLE</button></div>
+                    <div class="glass-card border-l-8 border-red-500"><h4 class="font-black mb-4">GİDER</h4><input id="f-gi-ad" placeholder="Kalem" class="w-full p-3 bg-slate-50 rounded-lg mb-2"><input id="f-gi-tutar" type="number" placeholder="Tutar" class="w-full p-3 bg-slate-50 rounded-lg mb-4"><button onclick="saveF('gider')" class="w-full bg-red-500 text-white p-3 rounded-lg font-bold">ÇIK</button></div>
+                </div>
+                <div id="f-list" class="space-y-2 font-bold"></div>
+            </div>
+
+            <div id="v-not" class="view hidden"><h2 class="text-3xl font-black mb-6">Notlar</h2><textarea id="shop-note" onchange="saveNote()" class="w-full h-96 p-8 rounded-2xl glass-card outline-none" placeholder="Dükkan notlarını buraya bırak..."></textarea></div>
         </div>
     </div>
 
-    <div id="m-modal" class="modal"><div class="bg-white p-8 rounded-3xl w-96"><h3 class="font-black text-xl mb-4">Yeni Müşteri</h3><input id="mi-ad" placeholder="İsim Soyisim" class="w-full p-3 bg-slate-100 rounded-xl mb-3"><input id="mi-uc" type="number" placeholder="Ücret" class="w-full p-3 bg-slate-100 rounded-xl mb-3"><input id="mi-is" placeholder="İşlem" class="w-full p-3 bg-slate-100 rounded-xl mb-6"><button onclick="saveM()" class="w-full bg-blue-600 text-white p-4 rounded-xl font-bold">KAYDET</button><button onclick="closeModal('m-modal')" class="w-full mt-2 text-slate-400 font-bold">İPTAL</button></div></div>
-    <div id="r-modal" class="modal"><div class="bg-white p-8 rounded-3xl w-96"><h3 class="font-black text-xl mb-4">Randevu Yaz</h3><input id="ri-ad" placeholder="Müşteri" class="w-full p-3 bg-slate-100 rounded-xl mb-3"><input id="ri-t" type="date" class="w-full p-3 bg-slate-100 rounded-xl mb-3"><input id="ri-s" type="time" class="w-full p-3 bg-slate-100 rounded-xl mb-6"><button onclick="saveR()" class="w-full bg-orange-500 text-white p-4 rounded-xl font-bold">RANDEVU EKLE</button></div></div>
-    <div id="s-modal" class="modal"><div class="bg-white p-8 rounded-3xl w-96"><h3 class="font-black text-xl mb-4">Stok Ekle</h3><input id="si-ad" placeholder="Ürün" class="w-full p-3 bg-slate-100 rounded-xl mb-3"><input id="si-at" type="number" placeholder="Adet" class="w-full p-3 bg-slate-100 rounded-xl mb-6"><button onclick="saveS()" class="w-full bg-slate-800 text-white p-4 rounded-xl font-bold">STOK EKLE</button></div></div>
+    <div id="m-modal" class="modal"><div class="bg-white p-8 rounded-3xl w-full max-w-md">
+        <h3 class="font-black text-xl mb-6 text-center italic">YENİ MÜŞTERİ KAYDI</h3>
+        <input id="mi-ad" placeholder="Müşteri Ad Soyad" class="w-full p-4 bg-slate-100 rounded-2xl mb-4 font-bold outline-none">
+        <input id="mi-uc" type="number" placeholder="Ücret ₺" class="w-full p-4 bg-slate-100 rounded-2xl mb-4 font-bold outline-none">
+        <input id="mi-is" placeholder="Yapılan İşlem" class="w-full p-4 bg-slate-100 rounded-2xl mb-4 font-bold outline-none">
+        <textarea id="mi-bo" placeholder="Boya Kodları / Notlar" class="w-full p-4 bg-slate-100 rounded-2xl mb-6 h-32 font-bold outline-none"></textarea>
+        <div class="flex gap-4"><button onclick="saveM()" class="flex-1 bg-blue-600 text-white p-4 rounded-2xl font-black">KAYDET</button><button onclick="closeModal('m-modal')" class="flex-1 bg-slate-200 text-slate-500 p-4 rounded-2xl font-black">KAPAT</button></div>
+    </div></div>
+
+    <div id="r-modal" class="modal"><div class="bg-white p-8 rounded-3xl w-96"><h3 class="font-black text-xl mb-4">Randevu Yaz</h3><input id="ri-ad" placeholder="Müşteri" class="w-full p-3 bg-slate-100 rounded-xl mb-3"><input id="ri-t" type="date" class="w-full p-3 bg-slate-100 rounded-xl mb-3"><input id="ri-s" type="time" class="w-full p-3 bg-slate-100 rounded-xl mb-6"><button onclick="saveR()" class="w-full bg-orange-500 text-white p-4 rounded-xl font-bold">EKLE</button></div></div>
+    <div id="s-modal" class="modal"><div class="bg-white p-8 rounded-3xl w-96"><h3 class="font-black text-xl mb-4">Ürün Kayıt</h3><input id="si-ad" placeholder="Ürün" class="w-full p-3 bg-slate-100 rounded-xl mb-3"><input id="si-at" type="number" placeholder="Adet" class="w-full p-3 bg-slate-100 rounded-xl mb-6"><button onclick="saveS()" class="w-full bg-slate-800 text-white p-4 rounded-xl font-bold">KAYDET</button></div></div>
 
     <script>
         const firebaseConfig = { databaseURL: "https://yusufakdenizhairpalace-c6884-default-rtdb.europe-west1.firebasedatabase.app/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // GİRİŞ FONKSİYONU (Düzeltildi)
-        function handleLogin() {
-            const pin = document.getElementById('entry-pass').value;
-            if(pin === "1234") {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-wrapper').classList.remove('hidden');
-            } else { alert("Yanlış Şifre!"); }
+        // GİRİŞ KONTROLÜ
+        function checkLogin() {
+            const pass = document.getElementById('pass-code').value;
+            if(pass === "1234") {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+            } else { alert("Hatalı Giriş!"); }
         }
 
         function tab(t) {
@@ -153,31 +165,33 @@
 
         db.ref('/').on('value', (snap) => {
             const data = snap.val() || {};
-            renderAll(data);
+            render(data);
         });
 
-        function renderAll(data) {
-            // Dashboard & Müşteriler
+        function render(data) {
+            // Müşteriler & Ciro
             const mTable = document.getElementById('m-table'); mTable.innerHTML = "";
             const recList = document.getElementById('recent-list'); recList.innerHTML = "";
-            let ciro = 0; let gider = 0;
-            
+            let ciro = 0, gider = 0;
+
             if(data.m) {
                 Object.keys(data.m).reverse().forEach(id => {
                     const x = data.m[id]; ciro += parseInt(x.uc || 0);
-                    mTable.innerHTML += `<tr class="border-b"> <td class="p-5 font-bold">${x.ad}</td> <td class="p-5">${x.is}</td> <td class="p-5 text-blue-600 font-bold">₺${x.uc}</td> <td class="p-5"><button onclick="del('m','${id}')" class="text-red-400">Sil</button></td> </tr>`;
+                    mTable.innerHTML += `<tr class="border-b border-slate-50"> <td class="p-5">${x.ad}</td> <td class="p-5 text-blue-500">${x.is}</td> <td class="p-5 text-slate-400 text-xs">${x.bo || '-'}</td> <td class="p-5 font-black">₺${x.uc}</td> <td class="p-5"><button onclick="del('m','${id}')" class="text-red-300 hover:text-red-600"><i class="fa-solid fa-trash"></i></button></td> </tr>`;
                 });
-                Object.values(data.m).slice(-3).forEach(x => {
-                    recList.innerHTML += `<div class="flex justify-between p-3 bg-slate-50 rounded-lg font-bold"><span>${x.ad}</span><span>₺${x.uc}</span></div>`;
+                Object.values(data.m).slice(-4).forEach(x => {
+                    recList.innerHTML += `<div class="flex justify-between p-3 bg-slate-50 rounded-xl font-bold"><span>${x.ad}</span><span class="text-blue-600">₺${x.uc}</span></div>`;
                 });
             }
 
             // Randevu (Haftalık Tablo)
             for(let i=0; i<=6; i++) document.getElementById('day-'+i).innerHTML = "";
+            const dRand = document.getElementById('dash-rand'); dRand.innerHTML = "";
             if(data.r) {
                 Object.keys(data.r).forEach(id => {
-                    const x = data.r[id]; const day = new Date(x.t).getDay();
-                    document.getElementById('day-'+day).innerHTML += `<div class="rand-item"><span>${x.s}</span><br>${x.ad}<button onclick="del('r','${id}')" class="float-right text-orange-300">x</button></div>`;
+                    const x = data.r[id]; const d = new Date(x.t).getDay();
+                    document.getElementById('day-'+d).innerHTML += `<div class="appointment-box"><span>${x.s}</span><br>${x.ad}<button onclick="del('r','${id}')" class="float-right text-orange-400">x</button></div>`;
+                    dRand.innerHTML += `<div class="text-[11px] font-bold p-1 border-b border-white/5">${x.ad} - ${x.s}</div>`;
                 });
             }
 
@@ -186,7 +200,7 @@
             if(data.s) {
                 Object.keys(data.s).forEach(id => {
                     const x = data.s[id];
-                    sGrid.innerHTML += `<div class="glass-card text-center"><p class="font-bold text-slate-400">${x.ad}</p><h4 class="text-2xl font-black my-2">${x.at}</h4><div class="flex gap-2 justify-center"><button onclick="updS('${id}',-1)" class="bg-slate-100 px-3 rounded-lg">-</button><button onclick="updS('${id}',1)" class="bg-slate-100 px-3 rounded-lg">+</button></div></div>`;
+                    sGrid.innerHTML += `<div class="glass-card text-center"><p class="text-xs font-bold text-slate-400">${x.ad}</p><h4 class="text-2xl font-black my-2">${x.at}</h4><div class="flex gap-2 justify-center"><button onclick="updS('${id}',-1)" class="bg-slate-50 w-8 h-8 rounded-lg">-</button><button onclick="updS('${id}',1)" class="bg-slate-50 w-8 h-8 rounded-lg">+</button></div></div>`;
                 });
             }
 
@@ -194,7 +208,7 @@
             const pGrid = document.getElementById('p-grid'); pGrid.innerHTML = "";
             for(let i=1; i<=10; i++) {
                 const x = (data.p && data.p[i]) ? data.p[i] : {name:'Masa '+i, av:0};
-                pGrid.innerHTML += `<div class="glass-card"><div class="flex justify-between mb-4"><input onchange="updP(${i},this.value)" value="${x.name}" class="font-bold border-none bg-transparent w-24"> <span class="text-[10px] bg-blue-600 text-white p-1 rounded">MASA ${i}</span></div><div class="bg-red-50 p-4 rounded-xl text-center"><p class="text-[10px] text-red-300">BORÇ</p><h4 class="text-xl font-black text-red-500">₺${x.av || 0}</h4></div><div class="flex gap-2 mt-4"><input id="av-${i}" type="number" placeholder="₺" class="w-full bg-slate-50 p-2 rounded-lg text-sm"><button onclick="addA(${i})" class="bg-blue-600 text-white px-4 rounded-lg">+</button></div></div>`;
+                pGrid.innerHTML += `<div class="glass-card"><div class="flex justify-between mb-4 items-center"><input onchange="updP(${i},this.value)" value="${x.name}" class="font-black border-none bg-transparent w-24"> <span class="text-[9px] bg-blue-600 text-white px-2 py-1 rounded">M${i}</span></div><div class="bg-red-50 p-4 rounded-xl text-center"><p class="text-[10px] text-red-300">BORÇ</p><h4 class="text-xl font-black text-red-500">₺${x.av || 0}</h4></div><div class="flex gap-2 mt-4"><input id="av-${i}" type="number" placeholder="₺" class="w-full bg-slate-50 p-2 rounded-lg text-sm"><button onclick="addA(${i})" class="bg-blue-600 text-white px-4 rounded-lg font-bold">+</button></div></div>`;
             }
 
             // Kasa
@@ -202,8 +216,8 @@
             if(data.f) {
                 Object.keys(data.f).reverse().forEach(id => {
                     const x = data.f[id]; if(x.tip==='gider') gider += parseInt(x.tutar); else ciro += parseInt(x.tutar);
-                    const col = x.tip==='gider' ? 'text-red-600 bg-red-50' : 'text-green-600 bg-green-50';
-                    fList.innerHTML += `<div class="p-3 ${col} rounded-lg flex justify-between font-bold"><span>${x.ad}</span><span>₺${x.tutar}</span></div>`;
+                    const col = x.tip==='gider' ? 'text-red-500 bg-red-50' : 'text-green-500 bg-green-50';
+                    fList.innerHTML += `<div class="p-3 ${col} rounded-xl flex justify-between"><span>${x.ad}</span><span>₺${x.tutar}</span></div>`;
                 });
             }
 
@@ -214,8 +228,7 @@
             document.getElementById('shop-note').value = data.n || "";
         }
 
-        // ACTIONS
-        function saveM() { const ad=document.getElementById('mi-ad').value, uc=document.getElementById('mi-uc').value, is=document.getElementById('mi-is').value; if(ad&&uc) db.ref('m').push({ad,uc,is}); closeModal('m-modal'); }
+        function saveM() { const ad=document.getElementById('mi-ad').value, uc=document.getElementById('mi-uc').value, is=document.getElementById('mi-is').value, bo=document.getElementById('mi-bo').value; if(ad&&uc) db.ref('m').push({ad,uc,is,bo}); closeModal('m-modal'); }
         function saveR() { const ad=document.getElementById('ri-ad').value, t=document.getElementById('ri-t').value, s=document.getElementById('ri-s').value; if(ad&&t&&s) db.ref('r').push({ad,t,s}); closeModal('r-modal'); }
         function saveS() { const ad=document.getElementById('si-ad').value, at=document.getElementById('si-at').value; if(ad&&at) db.ref('s').push({ad,at}); closeModal('s-modal'); }
         function saveF(tip) { 
@@ -226,7 +239,7 @@
         function updP(id, n) { db.ref('p/'+id+'/name').set(n); }
         function addA(id) { const v=document.getElementById('av-'+id).value; if(v) db.ref('p/'+id+'/av').transaction(c=>(c||0)+parseInt(v)); document.getElementById('av-'+id).value=""; }
         function updS(id, n) { db.ref('s/'+id+'/at').transaction(c=>(c||0)+n); }
-        function del(p, id) { if(confirm('Silinsin mi?')) db.ref(p+'/'+id).remove(); }
+        function del(p, id) { if(confirm('Sileyim mi?')) db.ref(p+'/'+id).remove(); }
         function saveNote() { db.ref('n').set(document.getElementById('shop-note').value); }
 
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR'); }, 1000);
