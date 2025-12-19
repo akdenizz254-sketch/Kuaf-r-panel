@@ -1,377 +1,90 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>YUSUF AKDENIZ MASTER PANEL v16</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        :root { --sidebar-w: 280px; --primary: #4318ff; --dark: #111c44; --light-bg: #f4f7fe; }
-        * { margin:0; padding:0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--light-bg); color: #1b2559; overflow-x: hidden; }
-
-        /* SIDEBAR PROFESYONEL */
-        .sidebar { width: var(--sidebar-w); height: 100vh; background: #fff; position: fixed; left: 0; top: 0; z-index: 1000; border-right: 1px solid #e9edf7; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .sidebar-header { padding: 40px 30px; text-align: center; border-bottom: 1px solid #f4f7fe; }
-        .nav-container { padding: 20px 0; }
-        .nav-link { margin: 4px 20px; padding: 16px 20px; display: flex; align-items: center; gap: 15px; color: #a3aed0; font-weight: 700; border-radius: 15px; cursor: pointer; transition: 0.2s; position: relative; }
-        .nav-link i { font-size: 1.2rem; width: 25px; text-align: center; }
-        .nav-link:hover, .nav-active { background: var(--light-bg); color: var(--primary); }
-        .nav-active::after { content: ''; width: 4px; height: 30px; background: var(--primary); position: absolute; right: 0; border-radius: 4px 0 0 4px; }
-
-        /* CONTENT */
-        .main-content { margin-left: var(--sidebar-w); padding: 40px; transition: all 0.3s; }
-        .glass-card { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(112, 144, 176, 0.1); border: 1px solid #fff; }
-        
-        /* TABLE STYLES */
-        .modern-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-        .modern-table th { padding: 15px 20px; text-align: left; font-size: 12px; color: #a3aed0; text-transform: uppercase; letter-spacing: 1px; }
-        .modern-table tr { background: #fff; transition: 0.2s; }
-        .modern-table tr:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .modern-table td { padding: 20px; font-weight: 700; font-size: 14px; border-top: 1px solid #f4f7fe; border-bottom: 1px solid #f4f7fe; }
-        .modern-table td:first-child { border-left: 1px solid #f4f7fe; border-radius: 15px 0 0 15px; }
-        .modern-table td:last-child { border-right: 1px solid #f4f7fe; border-radius: 0 15px 15px 0; }
-
-        /* MODALS */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; }
-        .modal-content { background: #fff; width: 90%; max-width: 550px; padding: 40px; border-radius: 30px; animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        /* INPUTS */
-        input, select, textarea { width: 100%; background: #f4f7fe; border: 2px solid #e9edf7; padding: 15px; border-radius: 16px; margin-bottom: 20px; font-weight: 600; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary); }
-
-        /* BUTTONS */
-        .btn-action { background: var(--primary); color: #fff; padding: 15px 30px; border-radius: 16px; font-weight: 800; display: inline-flex; align-items: center; gap: 10px; transition: 0.3s; }
-        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(67, 24, 255, 0.2); }
-
-        /* RESPONSIVE */
-        @media (max-width: 1024px) {
-            .sidebar { width: 85px; }
-            .sidebar span, .sidebar h1, .sidebar p { display: none; }
-            .main-content { margin-left: 85px; padding: 15px; }
-            .nav-link { justify-content: center; margin: 10px; padding: 15px; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>YUSUFAKDENİZ HAIR PALACE</title>
+  <style>
+    body { font-family: Arial; background:#f4f4f4; padding:20px }
+    h2 { margin-top:30px }
+    input, button { padding:8px; margin:5px }
+    table { border-collapse: collapse; width:100%; background:#fff }
+    th, td { border:1px solid #ccc; padding:8px; text-align:left }
+    th { background:#eee }
+  </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h1 class="text-2xl font-black italic">PALACE <span class="text-blue-600">CLOUD</span></h1>
-            <p class="text-[10px] font-bold text-slate-300 tracking-[4px] uppercase mt-2 italic">Yusuf Akdeniz v16</p>
-        </div>
-        <div class="nav-container">
-            <div onclick="tab('dash')" id="n-dash" class="nav-link nav-active"><i class="fa-solid fa-chart-pie"></i> <span>Genel Durum</span></div>
-            <div onclick="tab('must')" id="n-must" class="nav-link"><i class="fa-solid fa-user-group"></i> <span>Müşteri Portföyü</span></div>
-            <div onclick="tab('rand')" id="n-rand" class="nav-link"><i class="fa-solid fa-calendar-alt"></i> <span>Randevu Sistemi</span></div>
-            <div onclick="tab('stok')" id="n-stok" class="nav-link"><i class="fa-solid fa-boxes-packing"></i> <span>Ürün & Stok</span></div>
-            <div onclick="tab('pers')" id="n-pers" class="nav-link"><i class="fa-solid fa-user-tie"></i> <span>Personel Yönetimi</span></div>
-            <div onclick="tab('kasa')" id="n-kasa" class="nav-link"><i class="fa-solid fa-vault"></i> <span>Kasa & Muhasebe</span></div>
-            <div onclick="tab('analiz')" id="n-analiz" class="nav-link"><i class="fa-solid fa-chart-line"></i> <span>Finansal Rapor</span></div>
-            <div onclick="tab('not')" id="n-not" class="nav-link"><i class="fa-solid fa-note-sticky"></i> <span>Dükkan Notları</span></div>
-        </div>
-    </div>
+<h1>YUSUFAKDENİZ HAIR PALACE</h1>
 
-    <div class="main-content">
-        
-        <div id="v-dash" class="view space-y-8">
-            <div class="flex justify-between items-center">
-                <h2 class="text-3xl font-black">Dashboard</h2>
-                <div class="text-right"><p class="text-sm font-bold text-slate-400" id="live-date"></p><p class="text-xl font-black" id="live-clock"></p></div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="glass-card"><p class="text-xs font-bold text-slate-400 uppercase">GÜNLÜK CİRO</p><h3 id="d-ciro" class="text-3xl font-black text-blue-600">₺0</h3></div>
-                <div class="glass-card"><p class="text-xs font-bold text-slate-400 uppercase">MÜŞTERİ SAYISI</p><h3 id="d-must" class="text-3xl font-black">0</h3></div>
-                <div class="glass-card"><p class="text-xs font-bold text-slate-400 uppercase">RANDEVULAR</p><h3 id="d-rand" class="text-3xl font-black">0</h3></div>
-                <div class="glass-card"><p class="text-xs font-bold text-slate-400 uppercase">KASA NET</p><h3 id="d-net" class="text-3xl font-black text-green-500">₺0</h3></div>
-            </div>
+<h2>🔐 Giriş</h2>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Şifre">
+<button onclick="login()">Giriş Yap</button>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 glass-card">
-                    <h4 class="font-black text-lg mb-6 flex items-center gap-3"><i class="fa-solid fa-history text-blue-500"></i> Son Yapılan İşlemler</h4>
-                    <div id="recent-list" class="space-y-4"></div>
-                </div>
-                <div class="glass-card bg-[#111c44] text-white">
-                    <h4 class="font-black text-lg mb-4">Hızlı Randevu Özeti</h4>
-                    <div id="dash-rand" class="space-y-4 text-sm font-semibold opacity-70">Henüz randevu yok.</div>
-                </div>
-            </div>
-        </div>
+<h2>📅 Randevu Ekle</h2>
+<input id="r_tarih" placeholder="Tarih">
+<input id="r_saat" placeholder="Saat">
+<input id="r_musteri" placeholder="Müşteri">
+<button onclick="randevuEkle()">Ekle</button>
 
-        <div id="v-must" class="view hidden">
-            <div class="flex justify-between items-center mb-10">
-                <h2 class="text-3xl font-black">Müşteri Veritabanı</h2>
-                <button onclick="openModal('m-modal')" class="btn-action"><i class="fa-solid fa-plus"></i> Yeni Kayıt</button>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="modern-table">
-                    <thead><tr><th>İsim Soyisim</th><th>Hizmet</th><th>Boya/Detay</th><th>Ücret</th><th>Tarih</th><th>İşlem</th></tr></thead>
-                    <tbody id="m-table"></tbody>
-                </table>
-            </div>
-        </div>
+<h2>💰 Gelir Ekle</h2>
+<input id="g_aciklama" placeholder="Açıklama">
+<input id="g_tutar" placeholder="Tutar">
+<button onclick="gelirEkle()">Ekle</button>
 
-        <div id="v-rand" class="view hidden">
-            <div class="flex justify-between items-center mb-10">
-                <h2 class="text-3xl font-black">Randevu Defteri</h2>
-                <button onclick="openModal('r-modal')" class="btn-action bg-orange-500"><i class="fa-solid fa-calendar-plus"></i> Randevu Yaz</button>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="r-grid"></div>
-        </div>
+<h2>💸 Gider Ekle</h2>
+<input id="d_aciklama" placeholder="Açıklama">
+<input id="d_tutar" placeholder="Tutar">
+<button onclick="giderEkle()">Ekle</button>
 
-        <div id="v-stok" class="view hidden">
-            <div class="flex justify-between items-center mb-10">
-                <h2 class="text-3xl font-black">Stok Takibi</h2>
-                <button onclick="openModal('s-modal')" class="btn-action bg-slate-800"><i class="fa-solid fa-boxes-stacked"></i> Ürün Ekle</button>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6" id="s-grid"></div>
-        </div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        <div id="v-pers" class="view hidden">
-            <h2 class="text-3xl font-black mb-10">Çalışan Masaları (10 Personel)</h2>
-            <div id="p-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-        </div>
+const firebaseConfig = {
+  apiKey: "BURAYA_YAZILACAK",
+  authDomain: "BURAYA_YAZILACAK",
+  projectId: "BURAYA_YAZILACAK"
+};
 
-        <div id="v-kasa" class="view hidden">
-            <h2 class="text-3xl font-black mb-10">Muhasebe & Kasa Giriş-Çıkış</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-                <div class="glass-card border-l-8 border-green-500">
-                    <h3 class="font-black text-green-600 mb-6 uppercase tracking-widest">Gelir Ekle</h3>
-                    <input id="f-g-ad" placeholder="Gelir Kaynağı (Dükkan Satış vb.)">
-                    <input id="f-g-tutar" type="number" placeholder="Tutar ₺">
-                    <button onclick="saveFinance('gelir')" class="btn-action bg-green-500 w-full justify-center">KASAYA EKLE</button>
-                </div>
-                <div class="glass-card border-l-8 border-red-500">
-                    <h3 class="font-black text-red-600 mb-6 uppercase tracking-widest">Gider Ekle</h3>
-                    <input id="f-gi-ad" placeholder="Gider Kalemi (Kira, Fatura, Malzeme)">
-                    <input id="f-gi-tutar" type="number" placeholder="Tutar ₺">
-                    <button onclick="saveFinance('gider')" class="btn-action bg-red-500 w-full justify-center">KASADAN ÇIK</button>
-                </div>
-            </div>
-            <div class="glass-card"><h4 class="font-black mb-6 border-b pb-4 uppercase italic">Günlük Hareketler</h4><div id="f-list" class="space-y-3"></div></div>
-        </div>
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-        <div id="v-analiz" class="view hidden">
-            <h2 class="text-3xl font-black mb-10">Gelişmiş Finans Raporu</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 glass-card bg-navy text-white p-12 text-center" style="background:#111c44">
-                    <p class="opacity-50 font-bold uppercase tracking-widest text-xs mb-2">Toplam Brüt Hacim</p>
-                    <h3 id="a-brut" class="text-6xl font-black mb-10 tracking-tighter">₺0</h3>
-                    <div class="grid grid-cols-2 gap-6 border-t border-white/10 pt-10">
-                        <div><p class="opacity-40 text-xs font-bold uppercase">Müşteri Ortalaması</p><h5 id="a-ort" class="text-2xl font-black">₺0</h5></div>
-                        <div><p class="opacity-40 text-xs font-bold uppercase">Net Kâr</p><h5 id="a-kar" class="text-2xl font-black text-green-400">₺0</h5></div>
-                    </div>
-                </div>
-                <div class="space-y-6">
-                    <div class="glass-card"><p class="text-xs font-bold text-slate-400 uppercase">Gider Toplamı</p><h4 id="a-gider" class="text-2xl font-black text-red-500">₺0</h4></div>
-                    <div class="glass-card"><p class="text-xs font-bold text-slate-400 uppercase">Kayıtlı Müşteri</p><h4 id="a-must" class="text-2xl font-black">0</h4></div>
-                </div>
-            </div>
-        </div>
+window.login = () => {
+  signInWithEmailAndPassword(auth,
+    email.value,
+    password.value
+  ).then(() => alert("Giriş başarılı"))
+    .catch(e => alert(e.message));
+};
 
-        <div id="v-not" class="view hidden">
-            <h2 class="text-3xl font-black mb-6">Dükkan Hatırlatıcıları</h2>
-            <textarea id="shop-note" onchange="saveShopNote()" class="glass-card w-full h-[600px] border-none text-lg italic leading-loose" placeholder="Örn: 15 Aralık'ta boya siparişi verilecek..."></textarea>
-        </div>
+window.randevuEkle = async () => {
+  await addDoc(collection(db,"randevular"),{
+    tarih:r_tarih.value,
+    saat:r_saat.value,
+    musteri:r_musteri.value
+  });
+  alert("Randevu eklendi");
+};
 
-    </div>
+window.gelirEkle = async () => {
+  await addDoc(collection(db,"gelir"),{
+    aciklama:g_aciklama.value,
+    tutar:g_tutar.value
+  });
+  alert("Gelir eklendi");
+};
 
-    <div id="m-modal" class="modal"><div class="modal-content">
-        <h3 class="text-2xl font-black mb-8 uppercase italic tracking-tighter border-b pb-4">Yeni Müşteri Kartı</h3>
-        <div class="grid grid-cols-2 gap-4"><input id="mi-ad" placeholder="Ad Soyad"><input id="mi-ucret" type="number" placeholder="Ücret ₺"></div>
-        <input id="mi-islem" placeholder="Yapılan İşlem (Fön, Kesim, Ombre)">
-        <textarea id="mi-boya" placeholder="Boya Kodları / Teknik Detaylar" class="h-32"></textarea>
-        <button onclick="saveM()" class="btn-action w-full justify-center">SİSTEME KAYDET</button>
-        <button onclick="closeModal('m-modal')" class="w-full mt-4 font-bold text-slate-400">VAZGEÇ</button>
-    </div></div>
+window.giderEkle = async () => {
+  await addDoc(collection(db,"gider"),{
+    aciklama:d_aciklama.value,
+    tutar:d_tutar.value
+  });
+  alert("Gider eklendi");
+};
+</script>
 
-    <div id="r-modal" class="modal"><div class="modal-content">
-        <h3 class="text-2xl font-black mb-8 uppercase">Randevu Kaydı</h3>
-        <input id="ri-ad" placeholder="Müşteri İsmi">
-        <div class="grid grid-cols-2 gap-4"><input id="ri-tarih" type="date"><input id="ri-saat" type="time"></div>
-        <button onclick="saveR()" class="btn-action bg-orange-500 w-full justify-center">RANDEVUYU MÜHÜRLE</button>
-    </div></div>
-
-    <div id="s-modal" class="modal"><div class="modal-content">
-        <h3 class="text-2xl font-black mb-8 uppercase">Stok Girişi</h3>
-        <input id="si-ad" placeholder="Ürün / Malzeme Adı">
-        <input id="si-adet" type="number" placeholder="Mevcut Adet">
-        <button onclick="saveS()" class="btn-action bg-slate-800 w-full justify-center">STOĞA İŞLE</button>
-    </div></div>
-
-    <script>
-        // FIREBASE MASTER CORE
-        const firebaseConfig = { databaseURL: "https://yusufakdenizhairpalace-c6884-default-rtdb.europe-west1.firebasedatabase.app/" };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
-        // ANA SİSTEM FONKSİYONLARI
-        function tab(t) {
-            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('nav-active'));
-            document.getElementById('v-'+t).classList.remove('hidden');
-            document.getElementById('n-'+t).classList.add('nav-active');
-            if(window.innerWidth < 1024) { /* Mobil menü kapanışı buraya */ }
-        }
-
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        window.onclick = (e) => { if(e.target.className === 'modal') e.target.style.display = 'none'; }
-
-        // VERİ ÇEKME VE DİNAMİK YÖNETİM
-        db.ref('/').on('value', (snap) => {
-            const data = snap.val() || {m:{}, r:{}, s:{}, p:{}, f:{}, n:""};
-            renderDashboard(data);
-            renderCustomers(data.m);
-            renderAppointments(data.r);
-            renderStock(data.s);
-            renderPersonnel(data.p);
-            renderFinance(data.f);
-            renderAnaliz(data);
-            document.getElementById('shop-note').value = data.n || "";
-        });
-
-        function renderDashboard(data) {
-            let totalCiro = 0; let mCount = Object.keys(data.m || {}).length;
-            let rCount = Object.keys(data.r || {}).length;
-            let gider = 0;
-            if(data.m) Object.values(data.m).forEach(m => totalCiro += parseInt(m.ucret || 0));
-            if(data.f) Object.values(data.f).forEach(f => { if(f.tip==='gider') gider += parseInt(f.tutar || 0); });
-
-            document.getElementById('d-ciro').innerText = "₺" + totalCiro;
-            document.getElementById('d-must').innerText = mCount;
-            document.getElementById('d-rand').innerText = rCount;
-            document.getElementById('d-net').innerText = "₺" + (totalCiro - gider);
-
-            // Son İşlemler (Dashboard)
-            const list = document.getElementById('recent-list'); list.innerHTML = "";
-            if(data.m) Object.keys(data.m).reverse().slice(0,5).forEach(id => {
-                const m = data.m[id];
-                list.innerHTML += `<div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl"><div class="flex items-center gap-4"><div class="w-2 h-2 bg-blue-500 rounded-full"></div><span class="font-bold text-sm uppercase">${m.ad} - ${m.islem}</span></div><span class="font-black text-blue-600 italic text-sm">₺${m.ucret}</span></div>`;
-            });
-        }
-
-        function renderCustomers(m) {
-            const t = document.getElementById('m-table'); t.innerHTML = "";
-            if(!m) return;
-            Object.keys(m).reverse().forEach(id => {
-                const x = m[id];
-                t.innerHTML += `<tr>
-                    <td><div class="flex items-center gap-3"><div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center font-black">${x.ad.charAt(0).toUpperCase()}</div> ${x.ad}</div></td>
-                    <td>${x.islem}</td>
-                    <td><span class="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg text-[10px] uppercase font-black tracking-tighter">${x.boya || '-'}</span></td>
-                    <td class="text-blue-600 font-black italic">₺${x.ucret}</td>
-                    <td class="text-slate-400 text-xs">${new Date().toLocaleDateString('tr-TR')}</td>
-                    <td><button onclick="del('m','${id}')" class="text-red-200 hover:text-red-600 transition"><i class="fa-solid fa-trash-can"></i></button></td>
-                </tr>`;
-            });
-        }
-
-        function renderAppointments(r) {
-            const g = document.getElementById('r-grid'); const dg = document.getElementById('dash-rand');
-            g.innerHTML = ""; dg.innerHTML = "";
-            if(!r) { dg.innerText = "Henüz randevu yok."; return; }
-            Object.keys(r).forEach(id => {
-                const x = r[id];
-                const card = `<div class="glass-card border-l-8 border-orange-400 flex justify-between items-center"><div><h4 class="font-black uppercase">${x.ad}</h4><p class="text-xs font-bold text-slate-400 mt-1"><i class="fa-solid fa-clock"></i> ${x.tarih} | ${x.saat}</p></div><button onclick="del('r','${id}')" class="text-orange-200 hover:text-orange-500"><i class="fa-solid fa-circle-check text-2xl"></i></button></div>`;
-                g.innerHTML += card;
-                dg.innerHTML += `<div class="p-3 border-b border-white/5 flex justify-between"><span>${x.ad}</span><span>${x.saat}</span></div>`;
-            });
-        }
-
-        function renderStock(s) {
-            const g = document.getElementById('s-grid'); g.innerHTML = "";
-            if(!s) return;
-            Object.keys(s).forEach(id => {
-                const x = s[id];
-                const color = x.adet < 5 ? 'text-red-500 bg-red-50' : 'text-slate-800 bg-slate-50';
-                g.innerHTML += `<div class="glass-card text-center ${x.adet < 5 ? 'border-2 border-red-200' : ''}">
-                    <h5 class="font-black uppercase text-sm mb-4">${x.ad}</h5>
-                    <div class="${color} p-4 rounded-2xl mb-4"><p class="text-[10px] font-black uppercase opacity-40">Mevcut Adet</p><h4 class="text-3xl font-black">${x.adet}</h4></div>
-                    <div class="flex gap-2 justify-center"><button onclick="updS('${id}',-1)" class="bg-slate-100 w-10 h-10 rounded-xl font-black">-</button><button onclick="updS('${id}',1)" class="bg-slate-100 w-10 h-10 rounded-xl font-black">+</button><button onclick="del('s','${id}')" class="text-red-200 ml-4"><i class="fa-solid fa-xmark"></i></button></div>
-                </div>`;
-            });
-        }
-
-        function renderPersonnel(p) {
-            const g = document.getElementById('p-grid'); g.innerHTML = "";
-            for(let i=1; i<=10; i++) {
-                const x = (p && p[i]) ? p[i] : {name: 'PERSONEL '+i, avans: 0};
-                g.innerHTML += `<div class="glass-card">
-                    <div class="flex justify-between items-start mb-6"><input onchange="updP(${i},this.value)" value="${x.name}" class="bg-transparent border-none p-0 mb-0 font-black text-xl w-32 uppercase"><span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg">MASA ${i}</span></div>
-                    <div class="bg-red-50 p-6 rounded-2xl mb-6 text-center"><p class="text-[10px] font-black text-red-300 uppercase tracking-widest mb-1">Toplam Borç/Avans</p><h4 class="text-2xl font-black text-red-500">₺${x.avans || 0}</h4></div>
-                    <div class="flex gap-2"><input id="av-${i}" type="number" placeholder="₺" class="mb-0 text-center text-sm"><button onclick="addA(${i})" class="btn-action px-6">+</button></div>
-                </div>`;
-            }
-        }
-
-        function renderFinance(f) {
-            const l = document.getElementById('f-list'); l.innerHTML = "";
-            if(!f) return;
-            Object.keys(f).reverse().forEach(id => {
-                const x = f[id];
-                const color = x.tip==='gelir' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600';
-                l.innerHTML += `<div class="flex justify-between items-center p-5 ${color} rounded-2xl font-bold italic"><span>${x.ad}</span><div class="flex gap-6 items-center"><span>₺${x.tutar}</span><button onclick="del('f','${id}')" class="opacity-30"><i class="fa-solid fa-circle-xmark"></i></button></div></div>`;
-            });
-        }
-
-        function renderAnaliz(data) {
-            let gelir = 0; let gider = 0; let mCount = Object.keys(data.m || {}).length;
-            if(data.m) Object.values(data.m).forEach(m => gelir += parseInt(m.ucret || 0));
-            if(data.f) Object.values(data.f).forEach(f => { if(f.tip==='gelir') gelir += parseInt(f.tutar || 0); else gider += parseInt(f.tutar || 0); });
-            
-            document.getElementById('a-brut').innerText = "₺" + gelir;
-            document.getElementById('a-gider').innerText = "₺" + gider;
-            document.getElementById('a-kar').innerText = "₺" + (gelir - gider);
-            document.getElementById('a-must').innerText = mCount;
-            document.getElementById('a-ort').innerText = mCount > 0 ? "₺" + Math.round(gelir/mCount) : "₺0";
-        }
-
-        // VERİ KAYDETME FONKSİYONLARI (FULL AKTİF)
-        function saveM() {
-            const ad = document.getElementById('mi-ad').value, uc = document.getElementById('mi-ucret').value, isl = document.getElementById('mi-islem').value, boy = document.getElementById('mi-boya').value;
-            if(!ad || !uc) return alert("İsim ve Ücret zorunludur!");
-            db.ref('m').push({ad, ucret:uc, islem:isl, boya:boy, ts: firebase.database.ServerValue.TIMESTAMP });
-            closeModal('m-modal'); document.querySelectorAll('input, textarea').forEach(i => i.value = "");
-        }
-
-        function saveR() {
-            const ad = document.getElementById('ri-ad').value, t = document.getElementById('ri-tarih').value, s = document.getElementById('ri-saat').value;
-            if(ad && t && s) db.ref('r').push({ad, tarih:t, saat:s});
-            closeModal('r-modal'); document.querySelectorAll('input').forEach(i => i.value = "");
-        }
-
-        function saveS() {
-            const ad = document.getElementById('si-ad').value, adet = document.getElementById('si-adet').value;
-            if(ad && adet) db.ref('s').push({ad, adet:parseInt(adet)});
-            closeModal('s-modal'); document.querySelectorAll('input').forEach(i => i.value = "");
-        }
-
-        function saveFinance(tip) {
-            const ad = tip==='gelir' ? document.getElementById('f-g-ad').value : document.getElementById('f-gi-ad').value;
-            const tutar = tip==='gelir' ? document.getElementById('f-g-tutar').value : document.getElementById('f-gi-tutar').value;
-            if(ad && tutar) db.ref('f').push({tip, ad, tutar});
-            document.querySelectorAll('input').forEach(i => i.value = "");
-        }
-
-        function updP(id, n) { db.ref('p/'+id+'/name').set(n); }
-        function addA(id) { const v = document.getElementById('av-'+id).value; if(v) db.ref('p/'+id+'/avans').transaction(c => (c || 0) + parseInt(v)); document.getElementById('av-'+id).value=""; }
-        function updS(id, n) { db.ref('s/'+id+'/adet').transaction(c => (c || 0) + n); }
-        function saveShopNote() { db.ref('n').set(document.getElementById('shop-note').value); }
-        function del(p, id) { if(confirm('Bu kayıt tamamen silinsin mi?')) db.ref(p+'/'+id).remove(); }
-
-        // CANLI SAAT SİSTEMİ
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('live-date').innerText = now.toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            document.getElementById('live-clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0') + ":" + now.getSeconds().toString().padStart(2, '0');
-        }, 1000);
-    </script>
 </body>
 </html>
