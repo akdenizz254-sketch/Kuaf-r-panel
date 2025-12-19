@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yusuf Akdeniz | Executive Cloud</title>
+    <title>Yusuf Akdeniz | Hair Palace v7</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -11,86 +11,82 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap');
         :root { --accent: #ff2d55; --bg: #050505; --card: #121214; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; }
-        .weekly-grid { display: grid; grid-template-columns: repeat(7, minmax(300px, 1fr)); gap: 15px; overflow-x: auto; padding-bottom: 20px; }
-        .day-column { background: var(--card); border: 1px solid #1f1f23; border-radius: 20px; min-height: 600px; padding: 15px; }
-        .personel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
-        .personel-card { background: #16161a; border-radius: 15px; padding: 15px; border-top: 3px solid var(--accent); }
-        .custom-btn { background: var(--accent); transition: 0.3s; box-shadow: 0 5px 15px rgba(255, 45, 85, 0.3); }
-        input, select, textarea { background: #1c1c21 !important; border: 1px solid #2d2d35 !important; border-radius: 12px !important; color: white !important; padding: 12px !important; width: 100%; }
-        .tab-active { border-bottom: 3px solid var(--accent); color: var(--accent); }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; }
+        .weekly-grid { display: grid; grid-template-columns: repeat(7, minmax(280px, 1fr)); gap: 15px; overflow-x: auto; padding-bottom: 20px; }
+        .day-column { background: var(--card); border: 1px solid #1f1f23; border-radius: 20px; min-height: 550px; padding: 15px; }
+        input, select, textarea { background: #1c1c21 !important; border: 1px solid #2d2d35 !important; border-radius: 12px !important; color: white !important; padding: 12px !important; }
+        .custom-btn { background: var(--accent); box-shadow: 0 5px 15px rgba(255, 45, 85, 0.3); }
     </style>
 </head>
 <body class="pb-10">
 
     <div id="login" class="fixed inset-0 bg-black z-[9999] flex flex-col items-center justify-center p-8">
-        <h1 class="text-4xl font-black italic mb-2">YUSUF AKDENİZ</h1>
-        <p class="text-gray-500 tracking-[5px] text-[10px] mb-10 uppercase font-bold">Hair Palace Executive</p>
+        <h1 class="text-3xl font-black mb-10 italic text-center text-white">YUSUF AKDENİZ<br><span class="text-xs tracking-widest text-pink-600 font-bold">HAIR PALACE</span></h1>
         <div class="w-full max-w-xs space-y-4">
-            <input id="u" type="text" placeholder="Yönetici ID">
-            <input id="p" type="password" placeholder="Şifre">
-            <button onclick="auth()" class="custom-btn w-full p-4 rounded-xl font-black uppercase">Buluta Bağlan</button>
+            <input id="u" type="text" placeholder="Yönetici ID" class="w-full">
+            <input id="p" type="password" placeholder="Şifre" class="w-full">
+            <button onclick="auth()" class="custom-btn w-full p-4 rounded-xl font-bold uppercase">SİSTEMİ AÇ</button>
         </div>
     </div>
 
     <div id="app" class="hidden">
-        <header class="p-6 flex justify-between items-center sticky top-0 bg-black/80 backdrop-blur-xl z-50 border-b border-white/5">
-            <h2 class="text-xl font-black italic">HAIR PALACE <span class="text-pink-600">.</span></h2>
-            <div class="flex gap-4">
-                <button onclick="tab('r')" id="btn-r" class="text-[10px] font-bold px-2 py-1 tab-active">RANDEVU</button>
-                <button onclick="tab('p')" id="btn-p" class="text-[10px] font-bold px-2 py-1">PERSONEL</button>
-                <button onclick="tab('m')" id="btn-m" class="text-[10px] font-bold px-2 py-1">MÜŞTERİLER</button>
+        <header class="p-4 flex justify-between items-center sticky top-0 bg-black/90 backdrop-blur-xl z-50 border-b border-white/5">
+            <h2 class="font-black italic text-pink-600">YUSUF AKDENİZ</h2>
+            <div class="flex gap-2">
+                <button onclick="tab('r')" class="text-[9px] font-black px-2 py-1 bg-white/5 rounded">RANDEVU</button>
+                <button onclick="tab('p')" class="text-[9px] font-black px-2 py-1 bg-white/5 rounded">PERSONEL</button>
+                <button onclick="tab('m')" class="text-[9px] font-black px-2 py-1 bg-white/5 rounded">MÜŞTERİ</button>
             </div>
         </header>
 
-        <div id="v-r" class="view p-6">
+        <div id="v-r" class="view p-4">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-black uppercase">Haftalık Takvim</h3>
-                <button onclick="showModal('modalR')" class="custom-btn px-4 py-2 rounded-lg text-xs font-bold">+ YENİ</button>
+                <h3 class="font-black text-sm uppercase">Haftalık Ajanda</h3>
+                <button onclick="openModal('modalR')" class="custom-btn px-4 py-2 rounded-lg text-xs font-bold">+ YENİ EKLE</button>
             </div>
             <div class="weekly-grid no-scrollbar" id="weeklyGrid"></div>
         </div>
 
-        <div id="v-p" class="view hidden p-6">
-            <h3 class="text-xl font-black uppercase mb-6">Personel Takip</h3>
-            <div class="personel-grid" id="personelGrid"></div>
+        <div id="v-p" class="view hidden p-4">
+            <h3 class="font-black text-sm uppercase mb-4 text-pink-500 text-center">Personel Avans Takip (10 Sütun)</h3>
+            <div class="grid grid-cols-2 gap-3" id="personelGrid"></div>
         </div>
 
-        <div id="v-m" class="view hidden p-6">
+        <div id="v-m" class="view hidden p-4">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-black uppercase">Müşteri Arşivi</h3>
-                <button onclick="showModal('modalM')" class="bg-blue-600 px-4 py-2 rounded-lg text-xs font-bold">+ YENİ KART</button>
+                <h3 class="font-black text-sm uppercase">Müşteri Kartları</h3>
+                <button onclick="openModal('modalM')" class="bg-blue-600 px-4 py-2 rounded-lg text-xs font-bold">+ YENİ MÜŞTERİ</button>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="musteriList"></div>
+            <div id="musteriList" class="space-y-4"></div>
         </div>
     </div>
 
-    <div id="modalR" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center p-6">
+    <div id="modalR" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-6">
         <div class="bg-[#121214] p-8 w-full max-w-md space-y-4 rounded-2xl border border-white/10">
-            <h2 class="text-xl font-black">RANDEVU EKLE</h2>
-            <input id="rn" type="text" placeholder="Müşteri Adı">
-            <input id="ri" type="text" placeholder="İşlem (Fön, Kesim vb.)">
-            <input id="rs" type="time">
-            <input id="rt" type="date">
-            <button onclick="saveR()" class="custom-btn w-full p-4 rounded-xl font-bold">KAYDET</button>
-            <button onclick="closeModal('modalR')" class="w-full text-gray-500 text-xs">Kapat</button>
+            <h2 class="text-xl font-black">YENİ RANDEVU</h2>
+            <input id="rn" type="text" placeholder="Müşteri Adı" class="w-full">
+            <input id="ri" type="text" placeholder="İşlem" class="w-full">
+            <input id="rs" type="time" class="w-full">
+            <input id="rt" type="date" class="w-full">
+            <button onclick="saveR()" class="custom-btn w-full p-4 rounded-xl font-bold">BULUTA KAYDET</button>
+            <button onclick="closeModal('modalR')" class="w-full text-xs text-gray-500">Kapat</button>
         </div>
     </div>
 
-    <div id="modalM" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center p-6">
+    <div id="modalM" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-6">
         <div class="bg-[#121214] p-8 w-full max-w-md space-y-4 rounded-2xl border border-blue-900/30">
-            <h2 class="text-xl font-black text-blue-500">MÜŞTERİ KARTI</h2>
-            <input id="mn" type="text" placeholder="Ad Soyad">
-            <input id="mb" type="text" placeholder="Boya Numarası / Notu">
-            <input id="mu" type="number" placeholder="Ödenen Ücret">
-            <input id="mt" type="date">
-            <button onclick="saveM()" class="bg-blue-600 w-full p-4 rounded-xl font-bold">KARTI OLUŞTUR</button>
-            <button onclick="closeModal('modalM')" class="w-full text-gray-500 text-xs">Kapat</button>
+            <h2 class="text-xl font-black text-blue-500 text-center">YENİ MÜŞTERİ KARTI</h2>
+            <input id="mn" type="text" placeholder="Müşteri Adı Soyadı" class="w-full">
+            <input id="mb" type="text" placeholder="Boya No / Marka" class="w-full">
+            <input id="mu" type="number" placeholder="Ödenen Ücret (TL)" class="w-full">
+            <input id="mt" type="date" class="w-full">
+            <button onclick="saveM()" class="bg-blue-600 w-full p-4 rounded-xl font-bold uppercase">Kartı Buluta Mühürle</button>
+            <button onclick="closeModal('modalM')" class="w-full text-xs text-gray-500">Kapat</button>
         </div>
     </div>
 
     <script>
-        // FIREBASE BAĞLANTISI (SENİN LİNKİN)
+        // SENİN LİNKİN BURAYA GİRDİ
         const firebaseConfig = { databaseURL: "https://yusufakdenizhairpalace-c6884-default-rtdb.europe-west1.firebasedatabase.app/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
@@ -99,36 +95,27 @@
             if(document.getElementById('u').value === 'admin' && document.getElementById('p').value === '1234') {
                 document.getElementById('login').style.display = 'none';
                 document.getElementById('app').classList.remove('hidden');
-                listenData();
-            } else alert("Hatalı Giriş!");
+                listen();
+            } else alert("Yusuf Bey, hatalı giriş yaptınız.");
         }
 
         function tab(t) {
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-            document.querySelectorAll('header button').forEach(b => b.classList.remove('tab-active'));
             document.getElementById('v-'+t).classList.remove('hidden');
-            document.getElementById('btn-'+t).classList.add('tab-active');
         }
 
-        function showModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-        let currentData = { r: {}, m: {}, p: {} };
-
-        function listenData() {
-            db.ref('/').on('value', (snapshot) => {
-                currentData = snapshot.val() || { r: {}, m: {}, p: {} };
-                render();
+        function listen() {
+            db.ref('/').on('value', (snap) => {
+                const data = snap.val() || { r: {}, p: {}, m: {} };
+                render(data);
             });
         }
 
-        function render() {
-            renderRandevu();
-            renderPersonel();
-            renderMusteri();
-        }
-
-        function renderRandevu() {
+        function render(data) {
+            // RANDEVU RENDER
             const grid = document.getElementById('weeklyGrid');
             grid.innerHTML = "";
             const today = new Date();
@@ -136,17 +123,15 @@
                 let d = new Date(); d.setDate(today.getDate() + i);
                 let dStr = d.toISOString().split('T')[0];
                 let dName = d.toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric' });
-                let col = `<div class="day-column">
-                    <h4 class="font-black text-pink-600 mb-4 border-b border-white/5 pb-2 text-sm uppercase">${i===0 ? 'BUGÜN' : dName}</h4>
-                    <div class="space-y-2">`;
-                if(currentData.r) {
-                    Object.keys(currentData.r).forEach(id => {
-                        let r = currentData.r[id];
+                let col = `<div class="day-column"><h4 class="font-black text-pink-600 mb-4 border-b border-white/5 pb-2 text-xs uppercase text-center">${i===0 ? 'BUGÜN' : dName}</h4><div class="space-y-3">`;
+                if(data.r) {
+                    Object.keys(data.r).forEach(id => {
+                        let r = data.r[id];
                         if(r.tarih === dStr) {
-                            col += `<div class="bg-white/5 p-3 rounded-xl border-l-2 border-pink-500 relative">
-                                <p class="text-xs font-bold">${r.ad}</p>
-                                <p class="text-[10px] text-gray-400">${r.saat} | ${r.islem}</p>
-                                <button onclick="del('r','${id}')" class="absolute top-1 right-1 text-red-900 text-[10px]"><i class="fas fa-trash"></i></button>
+                            col += `<div class="bg-white/5 p-4 rounded-xl border-l-2 border-pink-500 relative">
+                                <p class="text-sm font-bold text-white uppercase">${r.ad}</p>
+                                <p class="text-[10px] text-gray-400 font-bold mt-1">${r.saat} | ${r.islem}</p>
+                                <button onclick="del('r','${id}')" class="absolute top-2 right-2 text-red-900 text-xs"><i class="fas fa-trash"></i></button>
                             </div>`;
                         }
                     });
@@ -154,48 +139,37 @@
                 col += `</div></div>`;
                 grid.innerHTML += col;
             }
-        }
 
-        function renderPersonel() {
-            const grid = document.getElementById('personelGrid');
-            grid.innerHTML = "";
+            // PERSONEL RENDER (10 SÜTUN)
+            const pGrid = document.getElementById('personelGrid');
+            pGrid.innerHTML = "";
             for(let i=1; i<=10; i++) {
-                let pData = (currentData.p && currentData.p[i]) ? currentData.p[i] : { name: 'Personel '+i, logs: {} };
-                let card = `<div class="personel-card">
-                    <input onchange="updPN(${i}, this.value)" value="${pData.name}" class="font-black uppercase text-xs text-pink-500 bg-transparent border-none mb-4">
-                    <div class="space-y-1 mb-4 max-h-32 overflow-y-auto">`;
-                if(pData.logs) {
-                    Object.keys(pData.logs).forEach(lid => {
-                        let l = pData.logs[lid];
-                        card += `<div class="flex justify-between text-[10px] bg-black/40 p-1 px-2 rounded"><span>Avans</span><span class="text-red-500">-${l.val}</span></div>`;
+                let p = (data.p && data.p[i]) ? data.p[i] : { name: 'Personel '+i, logs: {} };
+                let card = `<div class="bg-white/5 p-3 rounded-xl border-t-2 border-pink-500">
+                    <input onchange="updP(${i}, this.value)" value="${p.name}" class="text-[10px] font-bold text-pink-600 bg-transparent border-none p-0 mb-3 uppercase">
+                    <div class="space-y-1 mb-2 max-h-20 overflow-y-auto">`;
+                if(p.logs) {
+                    Object.keys(p.logs).forEach(lid => {
+                        card += `<div class="flex justify-between text-[9px] bg-black/50 p-1 rounded"><span>Avans</span><span class="text-red-500">-${p.logs[lid].val}</span></div>`;
                     });
                 }
-                card += `</div>
-                    <div class="flex gap-1">
-                        <input id="pv-${i}" type="number" placeholder="₺" class="text-[10px] p-1">
-                        <button onclick="addPL(${i})" class="bg-white text-black text-[10px] px-2 font-bold rounded">EKLE</button>
-                    </div>
-                </div>`;
-                grid.innerHTML += card;
+                card += `</div><div class="flex gap-1"><input id="pv-${i}" type="number" placeholder="₺" class="p-1 text-[10px] w-full"><button onclick="addAvans(${i})" class="bg-white text-black text-[9px] px-2 font-black rounded uppercase">Ekle</button></div></div>`;
+                pGrid.innerHTML += card;
             }
-        }
 
-        function renderMusteri() {
-            const list = document.getElementById('musteriList');
-            list.innerHTML = "";
-            if(currentData.m) {
-                Object.keys(currentData.m).forEach(id => {
-                    let m = currentData.m[id];
-                    list.innerHTML += `<div class="bg-[#16161a] p-5 rounded-2xl border-l-4 border-blue-600">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-black uppercase text-sm">${m.ad}</h4>
-                            <span class="text-[10px] font-bold text-blue-500">${m.ücret} TL</span>
+            // MÜŞTERİ RENDER
+            const mList = document.getElementById('musteriList');
+            mList.innerHTML = "";
+            if(data.m) {
+                Object.keys(data.m).forEach(id => {
+                    let m = data.m[id];
+                    mList.innerHTML += `<div class="bg-white/5 p-5 rounded-2xl border-l-4 border-blue-600">
+                        <div class="flex justify-between items-start"><h4 class="font-black text-white uppercase">${m.ad}</h4><span class="text-blue-500 font-black">${m.ücret} TL</span></div>
+                        <div class="grid grid-cols-2 gap-2 mt-4 text-[10px] text-gray-500">
+                            <p><i class="fas fa-palette mr-1"></i> Boya: ${m.boya}</p>
+                            <p><i class="fas fa-calendar-alt mr-1"></i> Tarih: ${m.tarih}</p>
                         </div>
-                        <div class="text-[10px] text-gray-500 space-y-1">
-                            <p><b>Boya:</b> ${m.boya}</p>
-                            <p><b>Tarih:</b> ${m.tarih}</p>
-                        </div>
-                        <button onclick="del('m','${id}')" class="mt-3 text-[10px] text-red-900 font-bold">KARTISI SİL</button>
+                        <button onclick="del('m','${id}')" class="mt-4 text-[9px] text-red-900 font-bold uppercase"><i class="fas fa-trash mr-1"></i> Kartı Sil</button>
                     </div>`;
                 });
             }
@@ -215,16 +189,15 @@
             closeModal('modalM');
         }
 
-        function updPN(idx, val) { db.ref('p/'+idx+'/name').set(val); }
-        function addPL(idx) {
-            const val = document.getElementById('pv-'+idx).value;
+        function updP(id, name) { db.ref('p/'+id+'/name').set(name); }
+        function addAvans(id) {
+            const val = document.getElementById('pv-'+id).value;
             if(!val) return;
-            db.ref('p/'+idx+'/logs').push({ val: val });
-            document.getElementById('pv-'+idx).value = "";
+            db.ref('p/'+id+'/logs').push({ val: val });
+            document.getElementById('pv-'+id).value = "";
         }
 
         function del(path, id) { if(confirm('Silinsin mi?')) db.ref(path+'/'+id).remove(); }
-
     </script>
 </body>
 </html>
