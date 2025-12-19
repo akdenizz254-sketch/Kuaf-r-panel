@@ -3,119 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yusuf Akdeniz | Executive v9</title>
+    <title>Yusuf Akdeniz | Enterprise v14 Ultimate</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #f4f7fe; margin: 0; }
-        /* SOL SÜTUNLAR (SIDEBAR) */
-        .sidebar { width: 240px; height: 100vh; background: #fff; border-right: 1px solid #e2e8f0; position: fixed; left: 0; top: 0; z-index: 1000; overflow-y: auto; }
-        .main-content { margin-left: 240px; padding: 20px; min-height: 100vh; }
-        .nav-item { padding: 12px 20px; display: flex; align-items: center; gap: 10px; cursor: pointer; color: #a3aed0; font-weight: 600; border-radius: 10px; margin: 4px 12px; transition: 0.2s; font-size: 14px; }
-        .nav-item:hover, .nav-active { background: #f4f7fe; color: #4318ff; }
-        .stat-card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        /* MOBİL AYARI */
-        @media (max-width: 768px) { 
-            .sidebar { width: 180px; font-size: 12px; } 
-            .main-content { margin-left: 180px; padding: 10px; }
-            .nav-item { padding: 10px 12px; margin: 4px 8px; gap: 8px; }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap');
+        
+        :root { 
+            --primary: #4318ff; 
+            --sidebar-bg: #111c44; 
+            --body-bg: #f4f7fe; 
+            --text-navy: #1b2559;
+            --accent: #05cd99;
         }
+
+        body { font-family: 'Outfit', sans-serif; background: var(--body-bg); color: var(--text-navy); margin: 0; overflow-x: hidden; }
+
+        /* PROFESYONEL SOL PANEL (SIDEBAR) */
+        .sidebar { 
+            width: 285px; height: 100vh; background: var(--sidebar-bg); 
+            position: fixed; left: 0; top: 0; z-index: 1000; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.08);
+        }
+        
+        .nav-link { 
+            margin: 8px 24px; padding: 16px 20px; 
+            display: flex; align-items: center; gap: 12px; 
+            color: rgba(255,255,255,0.7); font-weight: 600; 
+            border-radius: 15px; cursor: pointer; transition: 0.3s;
+        }
+
+        .nav-link:hover, .nav-active { 
+            background: rgba(255,255,255,0.1); color: #fff; 
+        }
+
+        .nav-link i { font-size: 1.2rem; width: 28px; text-align: center; }
+        
+        .active-indicator {
+            width: 4px; height: 36px; background: var(--primary);
+            position: absolute; right: 0; border-radius: 4px 0 0 4px;
+        }
+
+        /* ANA İÇERIK ALANI */
+        .main-wrapper { margin-left: 285px; padding: 40px; transition: 0.4s; }
+
+        /* KART TASARIMLARI */
+        .stat-card {
+            background: #fff; border-radius: 20px; padding: 25px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+        }
+
+        .icon-circle {
+            width: 56px; height: 56px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 24px;
+        }
+
+        /* TABLOLAR */
+        .custom-table { width: 100%; border-spacing: 0 12px; border-collapse: separate; }
+        .custom-table thead th { color: #a3aed0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; padding: 10px 20px; }
+        .custom-table tbody tr { background: #fff; border-radius: 20px; transition: 0.3s; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
+        .custom-table tbody tr:hover { transform: translateY(-3px); box-shadow: 0px 10px 20px rgba(0,0,0,0.05); }
+        .custom-table td { padding: 20px; font-weight: 700; }
+
+        /* MOBIL UYUM (RESPONSIVE) */
+        @media (max-width: 1100px) {
+            .sidebar { width: 80px; }
+            .sidebar .nav-link span, .sidebar .logo-text { display: none; }
+            .main-wrapper { margin-left: 80px; padding: 20px; }
+        }
+
+        /* MODAL VE GIRIŞLER */
+        .glass-modal { 
+            display: none; position: fixed; inset: 0; 
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); 
+            z-index: 2000; align-items: center; justify-content: center; 
+        }
+        
+        .modal-box { 
+            background: #fff; width: 90%; max-width: 600px; 
+            border-radius: 30px; padding: 40px; 
+            animation: modalAnim 0.4s ease;
+        }
+
+        @keyframes modalAnim { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+        input, select, textarea {
+            width: 100%; background: #F4F7FE; border: 1px solid #E0E5F2;
+            border-radius: 16px; padding: 15px 20px; margin-bottom: 20px;
+            font-weight: 600; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(67, 24, 255, 0.1); }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <div class="p-6">
-            <h1 class="text-xl font-extrabold text-[#2b3674] italic">ADMIN <span class="text-[#4318ff]">PANEL</span></h1>
+        <div class="p-10 border-b border-white/10 mb-6">
+            <h1 class="logo-text text-2xl font-black text-white italic tracking-tighter">YUSUF <span class="text-blue-500">PALACE</span></h1>
+            <p class="logo-text text-[10px] text-white/40 font-bold tracking-[4px] mt-1 uppercase">Cloud Management</p>
         </div>
         <nav>
-            <div onclick="tab('dash')" id="n-dash" class="nav-item nav-active"><i class="fas fa-th-large w-5"></i> Dashboard</div>
-            <div onclick="tab('must')" id="n-must" class="nav-item"><i class="fas fa-users w-5"></i> Müşteriler</div>
-            <div onclick="tab('rand')" id="n-rand" class="nav-item"><i class="fas fa-calendar-alt w-5"></i> Randevular</div>
-            <div onclick="tab('stok')" id="n-stok" class="nav-item"><i class="fas fa-boxes w-5"></i> Stok</div>
-            <div onclick="tab('kasa')" id="n-kasa" class="nav-item"><i class="fas fa-wallet w-5"></i> Kasa</div>
-            <div onclick="tab('pers')" id="n-pers" class="nav-item"><i class="fas fa-user-friends w-5"></i> Çalışanlar</div>
-            <div onclick="tab('rapo')" id="n-rapo" class="nav-item"><i class="fas fa-chart-line w-5"></i> Raporlar</div>
-            <div onclick="tab('ayar')" id="n-ayar" class="nav-item"><i class="fas fa-cog w-5"></i> Ayarlar</div>
+            <div onclick="tab('dash')" id="n-dash" class="nav-link nav-active"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></div>
+            <div onclick="tab('must')" id="n-must" class="nav-link"><i class="fa-solid fa-users"></i> <span>Müşteriler</span></div>
+            <div onclick="tab('rand')" id="n-rand" class="nav-link"><i class="fa-solid fa-calendar-day"></i> <span>Randevular</span></div>
+            <div onclick="tab('stok')" id="n-stok" class="nav-link"><i class="fa-solid fa-box-open"></i> <span>Stok Yönetimi</span></div>
+            <div onclick="tab('kasa')" id="n-kasa" class="nav-link"><i class="fa-solid fa-vault"></i> <span>Kasa/Finans</span></div>
+            <div onclick="tab('pers')" id="n-pers" class="nav-link"><i class="fa-solid fa-id-badge"></i> <span>Personel</span></div>
+            <div onclick="tab('ayar')" id="n-ayar" class="nav-link"><i class="fa-solid fa-sliders"></i> <span>Sistem Ayarları</span></div>
         </nav>
     </div>
 
-    <div class="main-content">
-        <div id="v-dash" class="view">
-            <h2 class="text-xl font-bold text-[#2b3674] mb-4 uppercase">Genel Bakış</h2>
-            <div class="grid grid-cols-1 gap-4">
+    <div class="main-wrapper">
+        
+        <div id="v-dash" class="view space-y-10">
+            <header class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm font-bold text-slate-400">Hoş Geldin,</p>
+                    <h2 class="text-3xl font-black">Yusuf Akdeniz 👋</h2>
+                </div>
+                <div class="bg-white p-3 rounded-2xl shadow-sm font-bold flex items-center gap-3">
+                    <i class="fa-solid fa-clock text-blue-500"></i> <span id="clock">--:--</span>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="stat-card">
-                    <p class="text-xs text-gray-400 font-bold">GÜNLÜK RANDEVU</p>
-                    <h3 id="d-r" class="text-2xl font-black text-[#2b3674]">0</h3>
+                    <div><p class="text-sm font-bold text-slate-400 mb-1">Günlük Ciro</p><h3 id="d-cash" class="text-2xl font-black text-blue-600 italic">₺0</h3></div>
+                    <div class="icon-circle bg-blue-50 text-blue-600"><i class="fa-solid fa-coins"></i></div>
                 </div>
                 <div class="stat-card">
-                    <p class="text-xs text-gray-400 font-bold">TOPLAM MÜŞTERİ</p>
-                    <h3 id="d-m" class="text-2xl font-black text-[#2b3674]">0</h3>
+                    <div><p class="text-sm font-bold text-slate-400 mb-1">Müşteri Sayısı</p><h3 id="d-must" class="text-2xl font-black text-slate-800">0</h3></div>
+                    <div class="icon-circle bg-purple-50 text-purple-600"><i class="fa-solid fa-user-tag"></i></div>
                 </div>
-                <div class="stat-card border-l-4 border-green-500">
-                    <p class="text-xs text-gray-400 font-bold">GÜNLÜK KASA</p>
-                    <h3 id="d-k" class="text-2xl font-black text-green-600">₺0</h3>
+                <div class="stat-card">
+                    <div><p class="text-sm font-bold text-slate-400 mb-1">Bekleyen Randevu</p><h3 id="d-rand" class="text-2xl font-black text-orange-500">0</h3></div>
+                    <div class="icon-circle bg-orange-50 text-orange-500"><i class="fa-solid fa-bell"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div><p class="text-sm font-bold text-slate-400 mb-1">Stok Uyarısı</p><h3 id="d-stok" class="text-2xl font-black text-red-500">Düşük</h3></div>
+                    <div class="icon-circle bg-red-50 text-red-500"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white rounded-[30px] p-8 shadow-sm">
+                    <h4 class="text-lg font-black mb-6">Son İşlemler</h4>
+                    <div id="recent-actions" class="space-y-4"></div>
+                </div>
+                <div class="bg-[#111c44] rounded-[30px] p-8 text-white">
+                    <h4 class="text-lg font-bold mb-6">Hızlı Not Al</h4>
+                    <textarea id="quick-note" onchange="saveNote()" class="bg-white/5 border-white/10 text-white h-48 focus:border-blue-400" placeholder="Yarınki siparişleri buraya yaz..."></textarea>
                 </div>
             </div>
         </div>
 
         <div id="v-must" class="view hidden">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-[#2b3674]">MÜŞTERİLER</h2>
-                <button onclick="addM()" class="bg-[#4318ff] text-white px-3 py-2 rounded-lg text-xs font-bold">+ EKLE</button>
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-black">Müşteri Portföyü</h2>
+                <button onclick="openModal('mModal')" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-blue-200">+ Müşteri Ekle</button>
             </div>
-            <div class="bg-white rounded-xl shadow-sm overflow-x-auto">
-                <table class="w-full text-left text-xs">
-                    <thead class="bg-gray-50 uppercase text-gray-400">
-                        <tr><th class="p-3">Ad</th><th class="p-3">Boya</th><th class="p-3">Ücret</th></tr>
-                    </thead>
+            <div class="overflow-x-auto">
+                <table class="custom-table">
+                    <thead><tr><th>İsim</th><th>Yapılan İşlem</th><th>Boya / Detay</th><th>Tutar</th><th>Tarih</th><th class="text-center">Aksiyon</th></tr></thead>
                     <tbody id="mTable"></tbody>
                 </table>
             </div>
         </div>
+
+        <div id="v-pers" class="view hidden">
+            <h2 class="text-3xl font-black mb-10">Personel & Masa Yönetimi</h2>
+            <div id="persGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        </div>
+
+    </div>
+
+    <div id="mModal" class="glass-modal">
+        <div class="modal-box">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-2xl font-black uppercase italic">Müşteri Kayıt Kartı</h3>
+                <button onclick="closeModal('mModal')" class="text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <input id="mi_ad" type="text" placeholder="Ad Soyad">
+                <input id="mi_ucret" type="number" placeholder="Alınan Ücret (₺)">
+            </div>
+            <input id="mi_islem" type="text" placeholder="Hizmet (Kesim, Fön, Boya...)">
+            <textarea id="mi_boya" placeholder="Boya Kodları ve Müşteri Notları..."></textarea>
+            <button onclick="saveCustomer()" class="w-full bg-blue-600 text-white p-5 rounded-2xl font-black shadow-xl">SİSTEME MÜHÜRLE</button>
+        </div>
     </div>
 
     <script>
+        // FIREBASE ENTEGRASYONU
         const firebaseConfig = { databaseURL: "https://yusufakdenizhairpalace-c6884-default-rtdb.europe-west1.firebasedatabase.app/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // TAB SİSTEMİ
         function tab(t) {
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('nav-active'));
             document.getElementById('v-'+t).classList.remove('hidden');
-            document.getElementById('n text-'+t).classList.add('nav-active');
+            document.getElementById('n-'+t).classList.add('nav-active');
         }
 
-        db.ref('/').on('value', (snap) => {
-            const data = snap.val() || { m: {}, r: {} };
-            const mList = document.getElementById('mTable');
-            mList.innerHTML = "";
-            let totalM = 0, totalK = 0;
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-            if(data.m) {
-                Object.keys(data.m).forEach(id => {
-                    const m = data.m[id]; totalM++; totalK += parseInt(m.ücret || 0);
-                    mList.innerHTML += `<tr class="border-t">
-                        <td class="p-3 font-bold">${m.ad}</td>
-                        <td class="p-3 text-gray-500">${m.boya || '-'}</td>
-                        <td class="p-3 text-green-600 font-bold">₺${m.ücret}</td>
-                    </tr>`;
-                });
-            }
-            document.getElementById('d-m').innerText = totalM;
-            document.getElementById('d-k').innerText = "₺" + totalK;
+        // VERİ ÇEKME VE İŞLEME (REAL-TIME)
+        db.ref('/').on('value', (snap) => {
+            const data = snap.val() || { m:{}, p:{}, n:"" };
+            updateDashboard(data);
+            renderCustomers(data.m);
+            renderPersonnel(data.p);
+            document.getElementById('quick-note').value = data.n || "";
         });
 
-        function addM() {
-            const ad = prompt("Müşteri Adı:");
-            const boya = prompt("Boya No:");
-            const ücret = prompt("Ücret:");
-            if(ad && ücret) db.ref('m').push({ ad, boya, ücret });
+        function updateDashboard(data) {
+            let totalCash = 0; let mCount = 0;
+            if(data.m) {
+                Object.values(data.m).forEach(m => { totalCash += parseInt(m.ucret || 0); mCount++; });
+            }
+            document.getElementById('d-cash').innerText = "₺" + totalCash;
+            document.getElementById('d-must').innerText = mCount;
         }
+
+        function renderCustomers(mObj) {
+            const table = document.getElementById('mTable');
+            const recent = document.getElementById('recent-actions');
+            table.innerHTML = ""; recent.innerHTML = "";
+            if(!mObj) return;
+
+            Object.keys(mObj).reverse().forEach(id => {
+                const m = mObj[id];
+                // Tabloya Ekle
+                table.innerHTML += `<tr>
+                    <td><div class="flex items-center gap-3"><div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center font-bold uppercase">${m.ad.charAt(0)}</div> ${m.ad}</div></td>
+                    <td>${m.islem}</td>
+                    <td><span class="bg-slate-100 px-3 py-1 rounded-lg text-[11px] font-black italic uppercase">${m.boya || '-'}</span></td>
+                    <td class="text-blue-600 font-black italic">₺${m.ucret}</td>
+                    <td class="text-slate-400 text-sm">${new Date().toLocaleDateString('tr-TR')}</td>
+                    <td class="text-center"><button onclick="del('m','${id}')" class="text-red-200 hover:text-red-600"><i class="fa-solid fa-trash-can"></i></button></td>
+                </tr>`;
+                
+                // Dashboard Son İşlemlere Ekle (Son 5)
+                recent.innerHTML += `<div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+                    <div class="flex items-center gap-4"><div class="w-2 h-2 bg-blue-500 rounded-full"></div><span class="font-bold">${m.ad} - ${m.islem}</span></div>
+                    <span class="font-black text-blue-600">₺${m.ucret}</span>
+                </div>`;
+            });
+        }
+
+        function renderPersonnel(pObj) {
+            const grid = document.getElementById('persGrid');
+            grid.innerHTML = "";
+            for(let i=1; i<=10; i++) {
+                const p = (pObj && pObj[i]) ? pObj[i] : { name: `Personel ${i}`, avans: 0 };
+                grid.innerHTML += `<div class="stat-card flex-col items-stretch gap-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <input onchange="updP(${i}, this.value)" value="${p.name}" class="bg-transparent border-none p-0 mb-0 text-xl font-black w-32 uppercase">
+                        <span class="bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase">Masa ${i}</span>
+                    </div>
+                    <div class="bg-red-50 p-6 rounded-[25px] flex flex-col items-center">
+                        <p class="text-[10px] font-black text-red-300 uppercase tracking-widest mb-1">Toplam Avans / Borç</p>
+                        <h5 class="text-3xl font-black text-red-600 italic">₺${p.avans || 0}</h5>
+                    </div>
+                    <div class="flex gap-2">
+                        <input id="av-${i}" type="number" placeholder="₺" class="mb-0 text-center">
+                        <button onclick="addA(${i})" class="bg-[#111c44] text-white px-6 rounded-2xl font-black transition hover:scale-105">+</button>
+                    </div>
+                </div>`;
+            }
+        }
+
+        // İŞLEM FONKSİYONLARI (KAPSAMLI)
+        function saveCustomer() {
+            const ad = document.getElementById('mi_ad').value;
+            const ucret = document.getElementById('mi_ucret').value;
+            const islem = document.getElementById('mi_islem').value;
+            const boya = document.getElementById('mi_boya').value;
+
+            if(!ad || !ucret) return alert("Lütfen isim ve ücret bilgisini boş bırakma!");
+            
+            db.ref('m').push({ ad, ucret, islem, boya, ts: firebase.database.ServerValue.TIMESTAMP })
+              .then(() => {
+                  closeModal('mModal');
+                  document.querySelectorAll('input, textarea').forEach(i => i.value = "");
+              });
+        }
+
+        function updP(id, n) { db.ref('p/'+id+'/name').set(n); }
+        function addA(id) {
+            const v = document.getElementById('av-'+id).value;
+            if(!v) return;
+            db.ref('p/'+id+'/avans').transaction(c => (c || 0) + parseInt(v));
+            document.getElementById('av-'+id).value = "";
+        }
+
+        function saveNote() { db.ref('n').set(document.getElementById('quick-note').value); }
+        function del(path, id) { if(confirm('Bu kaydı sistemden kalıcı olarak silmek istediğine emin misin?')) db.ref(path+'/'+id).remove(); }
+        
+        // CANLI SAAT
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+        }, 1000);
     </script>
 </body>
 </html>
