@@ -3,201 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yusuf Akdeniz | Hair Palace v7</title>
+    <title>Yusuf Akdeniz | Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap');
-        :root { --accent: #ff2d55; --bg: #050505; --card: #121214; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; }
-        .weekly-grid { display: grid; grid-template-columns: repeat(7, minmax(280px, 1fr)); gap: 15px; overflow-x: auto; padding-bottom: 20px; }
-        .day-column { background: var(--card); border: 1px solid #1f1f23; border-radius: 20px; min-height: 550px; padding: 15px; }
-        input, select, textarea { background: #1c1c21 !important; border: 1px solid #2d2d35 !important; border-radius: 12px !important; color: white !important; padding: 12px !important; }
-        .custom-btn { background: var(--accent); box-shadow: 0 5px 15px rgba(255, 45, 85, 0.3); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #f4f7fe; color: #1b2559; margin: 0; overflow: hidden; }
+        .sidebar { width: 260px; height: 100vh; background: #fff; border-right: 1px solid #e2e8f0; position: fixed; left: 0; top: 0; transition: 0.3s; z-index: 1000; }
+        .main-content { margin-left: 260px; height: 100vh; overflow-y: auto; padding: 25px; transition: 0.3s; }
+        .nav-item { padding: 15px 25px; display: flex; items-center; gap: 12px; cursor: pointer; color: #a3aed0; font-weight: 600; border-radius: 12px; margin: 5px 15px; transition: 0.2s; }
+        .nav-item:hover { background: #f4f7fe; color: #4318ff; }
+        .nav-active { background: #f4f7fe; color: #4318ff; }
+        .nav-item i { font-size: 18px; }
+        .stat-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.02); }
+        .btn-add { background: #4318ff; color: white; padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 13px; }
+        @media (max-width: 768px) { .sidebar { left: -260px; } .sidebar.active { left: 0; } .main-content { margin-left: 0; } }
     </style>
 </head>
-<body class="pb-10">
+<body>
 
-    <div id="login" class="fixed inset-0 bg-black z-[9999] flex flex-col items-center justify-center p-8">
-        <h1 class="text-3xl font-black mb-10 italic text-center text-white">YUSUF AKDENİZ<br><span class="text-xs tracking-widest text-pink-600 font-bold">HAIR PALACE</span></h1>
-        <div class="w-full max-w-xs space-y-4">
-            <input id="u" type="text" placeholder="Yönetici ID" class="w-full">
-            <input id="p" type="password" placeholder="Şifre" class="w-full">
-            <button onclick="auth()" class="custom-btn w-full p-4 rounded-xl font-bold uppercase">SİSTEMİ AÇ</button>
+    <div class="sidebar" id="sidebar">
+        <div class="p-8">
+            <h1 class="text-2xl font-extrabold tracking-tight text-[#2b3674] italic">ADMIN <span class="text-[#4318ff]">PANEL</span></h1>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[3px]">Yusuf Akdeniz</p>
         </div>
+        <nav class="mt-4">
+            <div onclick="tab('dash')" id="n-dash" class="nav-item nav-active"><i class="fas fa-th-large"></i> Dashboard</div>
+            <div onclick="tab('must')" id="n-must" class="nav-item"><i class="fas fa-users"></i> Müşteriler</div>
+            <div onclick="tab('rand')" id="n-rand" class="nav-item"><i class="fas fa-calendar-alt"></i> Randevular</div>
+            <div onclick="tab('stok')" id="n-stok" class="nav-item"><i class="fas fa-boxes"></i> Stok</div>
+            <div onclick="tab('kasa')" id="n-kasa" class="nav-item"><i class="fas fa-wallet"></i> Kasa</div>
+            <div onclick="tab('pers')" id="n-pers" class="nav-item"><i class="fas fa-user-friends"></i> Çalışanlar</div>
+            <div onclick="tab('rapo')" id="n-rapo" class="nav-item"><i class="fas fa-chart-line"></i> Raporlar</div>
+            <div onclick="tab('ayar')" id="n-ayar" class="nav-item"><i class="fas fa-cog"></i> Ayarlar</div>
+        </nav>
     </div>
 
-    <div id="app" class="hidden">
-        <header class="p-4 flex justify-between items-center sticky top-0 bg-black/90 backdrop-blur-xl z-50 border-b border-white/5">
-            <h2 class="font-black italic text-pink-600">YUSUF AKDENİZ</h2>
-            <div class="flex gap-2">
-                <button onclick="tab('r')" class="text-[9px] font-black px-2 py-1 bg-white/5 rounded">RANDEVU</button>
-                <button onclick="tab('p')" class="text-[9px] font-black px-2 py-1 bg-white/5 rounded">PERSONEL</button>
-                <button onclick="tab('m')" class="text-[9px] font-black px-2 py-1 bg-white/5 rounded">MÜŞTERİ</button>
+    <div class="main-content">
+        <div id="v-dash" class="view space-y-6">
+            <h2 class="text-2xl font-bold text-[#2b3674]">Genel Bakış</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="stat-card">
+                    <p class="text-sm text-gray-400">Günlük Randevu</p>
+                    <h3 id="dash-rand" class="text-2xl font-bold text-[#2b3674]">0</h3>
+                </div>
+                <div class="stat-card">
+                    <p class="text-sm text-gray-400">Toplam Müşteri</p>
+                    <h3 id="dash-must" class="text-2xl font-bold text-[#2b3674]">0</h3>
+                </div>
+                <div class="stat-card border-l-4 border-green-500">
+                    <p class="text-sm text-gray-400">Günlük Kasa</p>
+                    <h3 id="dash-kasa" class="text-2xl font-bold text-green-600">₺0</h3>
+                </div>
             </div>
-        </header>
+        </div>
 
-        <div id="v-r" class="view p-4">
+        <div id="v-must" class="view hidden">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="font-black text-sm uppercase">Haftalık Ajanda</h3>
-                <button onclick="openModal('modalR')" class="custom-btn px-4 py-2 rounded-lg text-xs font-bold">+ YENİ EKLE</button>
+                <h2 class="text-2xl font-bold text-[#2b3674]">Müşteri Listesi</h2>
+                <button onclick="showM()" class="btn-add">+ Yeni Müşteri Ekle</button>
             </div>
-            <div class="weekly-grid no-scrollbar" id="weeklyGrid"></div>
-        </div>
-
-        <div id="v-p" class="view hidden p-4">
-            <h3 class="font-black text-sm uppercase mb-4 text-pink-500 text-center">Personel Avans Takip (10 Sütun)</h3>
-            <div class="grid grid-cols-2 gap-3" id="personelGrid"></div>
-        </div>
-
-        <div id="v-m" class="view hidden p-4">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="font-black text-sm uppercase">Müşteri Kartları</h3>
-                <button onclick="openModal('modalM')" class="bg-blue-600 px-4 py-2 rounded-lg text-xs font-bold">+ YENİ MÜŞTERİ</button>
+            <div class="bg-white rounded-3xl overflow-hidden shadow-sm">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-[#f4f7fe]">
+                        <tr class="text-[12px] text-gray-400 uppercase">
+                            <th class="p-5">Ad Soyad</th>
+                            <th class="p-5">Boya / Not</th>
+                            <th class="p-5">Ücret</th>
+                            <th class="p-5">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mustTable" class="text-sm"></tbody>
+                </table>
             </div>
-            <div id="musteriList" class="space-y-4"></div>
         </div>
-    </div>
 
-    <div id="modalR" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-6">
-        <div class="bg-[#121214] p-8 w-full max-w-md space-y-4 rounded-2xl border border-white/10">
-            <h2 class="text-xl font-black">YENİ RANDEVU</h2>
-            <input id="rn" type="text" placeholder="Müşteri Adı" class="w-full">
-            <input id="ri" type="text" placeholder="İşlem" class="w-full">
-            <input id="rs" type="time" class="w-full">
-            <input id="rt" type="date" class="w-full">
-            <button onclick="saveR()" class="custom-btn w-full p-4 rounded-xl font-bold">BULUTA KAYDET</button>
-            <button onclick="closeModal('modalR')" class="w-full text-xs text-gray-500">Kapat</button>
-        </div>
-    </div>
-
-    <div id="modalM" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-6">
-        <div class="bg-[#121214] p-8 w-full max-w-md space-y-4 rounded-2xl border border-blue-900/30">
-            <h2 class="text-xl font-black text-blue-500 text-center">YENİ MÜŞTERİ KARTI</h2>
-            <input id="mn" type="text" placeholder="Müşteri Adı Soyadı" class="w-full">
-            <input id="mb" type="text" placeholder="Boya No / Marka" class="w-full">
-            <input id="mu" type="number" placeholder="Ödenen Ücret (TL)" class="w-full">
-            <input id="mt" type="date" class="w-full">
-            <button onclick="saveM()" class="bg-blue-600 w-full p-4 rounded-xl font-bold uppercase">Kartı Buluta Mühürle</button>
-            <button onclick="closeModal('modalM')" class="w-full text-xs text-gray-500">Kapat</button>
+        <div id="v-pers" class="view hidden">
+            <h2 class="text-2xl font-bold text-[#2b3674] mb-6">Çalışan Masası</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="persList"></div>
         </div>
     </div>
 
     <script>
-        // SENİN LİNKİN BURAYA GİRDİ
         const firebaseConfig = { databaseURL: "https://yusufakdenizhairpalace-c6884-default-rtdb.europe-west1.firebasedatabase.app/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        function auth() {
-            if(document.getElementById('u').value === 'admin' && document.getElementById('p').value === '1234') {
-                document.getElementById('login').style.display = 'none';
-                document.getElementById('app').classList.remove('hidden');
-                listen();
-            } else alert("Yusuf Bey, hatalı giriş yaptınız.");
-        }
-
         function tab(t) {
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
             document.getElementById('v-'+t).classList.remove('hidden');
+            document.getElementById('n-'+t).classList.add('nav-active');
         }
 
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        function listen() {
-            db.ref('/').on('value', (snap) => {
-                const data = snap.val() || { r: {}, p: {}, m: {} };
-                render(data);
-            });
-        }
+        db.ref('/').on('value', (snap) => {
+            const data = snap.val() || {};
+            render(data);
+        });
 
         function render(data) {
-            // RANDEVU RENDER
-            const grid = document.getElementById('weeklyGrid');
-            grid.innerHTML = "";
-            const today = new Date();
-            for(let i=0; i<7; i++) {
-                let d = new Date(); d.setDate(today.getDate() + i);
-                let dStr = d.toISOString().split('T')[0];
-                let dName = d.toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric' });
-                let col = `<div class="day-column"><h4 class="font-black text-pink-600 mb-4 border-b border-white/5 pb-2 text-xs uppercase text-center">${i===0 ? 'BUGÜN' : dName}</h4><div class="space-y-3">`;
-                if(data.r) {
-                    Object.keys(data.r).forEach(id => {
-                        let r = data.r[id];
-                        if(r.tarih === dStr) {
-                            col += `<div class="bg-white/5 p-4 rounded-xl border-l-2 border-pink-500 relative">
-                                <p class="text-sm font-bold text-white uppercase">${r.ad}</p>
-                                <p class="text-[10px] text-gray-400 font-bold mt-1">${r.saat} | ${r.islem}</p>
-                                <button onclick="del('r','${id}')" class="absolute top-2 right-2 text-red-900 text-xs"><i class="fas fa-trash"></i></button>
-                            </div>`;
-                        }
-                    });
-                }
-                col += `</div></div>`;
-                grid.innerHTML += col;
-            }
-
-            // PERSONEL RENDER (10 SÜTUN)
-            const pGrid = document.getElementById('personelGrid');
-            pGrid.innerHTML = "";
-            for(let i=1; i<=10; i++) {
-                let p = (data.p && data.p[i]) ? data.p[i] : { name: 'Personel '+i, logs: {} };
-                let card = `<div class="bg-white/5 p-3 rounded-xl border-t-2 border-pink-500">
-                    <input onchange="updP(${i}, this.value)" value="${p.name}" class="text-[10px] font-bold text-pink-600 bg-transparent border-none p-0 mb-3 uppercase">
-                    <div class="space-y-1 mb-2 max-h-20 overflow-y-auto">`;
-                if(p.logs) {
-                    Object.keys(p.logs).forEach(lid => {
-                        card += `<div class="flex justify-between text-[9px] bg-black/50 p-1 rounded"><span>Avans</span><span class="text-red-500">-${p.logs[lid].val}</span></div>`;
-                    });
-                }
-                card += `</div><div class="flex gap-1"><input id="pv-${i}" type="number" placeholder="₺" class="p-1 text-[10px] w-full"><button onclick="addAvans(${i})" class="bg-white text-black text-[9px] px-2 font-black rounded uppercase">Ekle</button></div></div>`;
-                pGrid.innerHTML += card;
-            }
-
-            // MÜŞTERİ RENDER
-            const mList = document.getElementById('musteriList');
-            mList.innerHTML = "";
+            // Müşteri Tablosunu Render Et
+            const t = document.getElementById('mustTable');
+            t.innerHTML = "";
+            let mCount = 0;
             if(data.m) {
                 Object.keys(data.m).forEach(id => {
-                    let m = data.m[id];
-                    mList.innerHTML += `<div class="bg-white/5 p-5 rounded-2xl border-l-4 border-blue-600">
-                        <div class="flex justify-between items-start"><h4 class="font-black text-white uppercase">${m.ad}</h4><span class="text-blue-500 font-black">${m.ücret} TL</span></div>
-                        <div class="grid grid-cols-2 gap-2 mt-4 text-[10px] text-gray-500">
-                            <p><i class="fas fa-palette mr-1"></i> Boya: ${m.boya}</p>
-                            <p><i class="fas fa-calendar-alt mr-1"></i> Tarih: ${m.tarih}</p>
-                        </div>
-                        <button onclick="del('m','${id}')" class="mt-4 text-[9px] text-red-900 font-bold uppercase"><i class="fas fa-trash mr-1"></i> Kartı Sil</button>
-                    </div>`;
+                    const m = data.m[id]; mCount++;
+                    t.innerHTML += `<tr class="border-b border-gray-50">
+                        <td class="p-5 font-bold">${m.ad}</td>
+                        <td class="p-5 text-gray-500">${m.boya || '-'}</td>
+                        <td class="p-5 font-bold text-green-600">₺${m.ücret || 0}</td>
+                        <td class="p-5"><button onclick="del('m','${id}')" class="text-red-500"><i class="fas fa-trash"></i></button></td>
+                    </tr>`;
                 });
             }
+            document.getElementById('dash-must').innerText = mCount;
+            // Diğer render işlemleri buraya...
         }
 
-        function saveR() {
-            const ad = document.getElementById('rn').value, islem = document.getElementById('ri').value, saat = document.getElementById('rs').value, tarih = document.getElementById('rt').value;
-            if(!ad || !tarih) return;
-            db.ref('r').push({ ad, islem, saat, tarih });
-            closeModal('modalR');
-        }
-
-        function saveM() {
-            const ad = document.getElementById('mn').value, boya = document.getElementById('mb').value, ücret = document.getElementById('mu').value, tarih = document.getElementById('mt').value;
-            if(!ad) return;
-            db.ref('m').push({ ad, boya, ücret, tarih });
-            closeModal('modalM');
-        }
-
-        function updP(id, name) { db.ref('p/'+id+'/name').set(name); }
-        function addAvans(id) {
-            const val = document.getElementById('pv-'+id).value;
-            if(!val) return;
-            db.ref('p/'+id+'/logs').push({ val: val });
-            document.getElementById('pv-'+id).value = "";
-        }
-
-        function del(path, id) { if(confirm('Silinsin mi?')) db.ref(path+'/'+id).remove(); }
+        function del(p, id) { if(confirm('Silinsin mi?')) db.ref(p+'/'+id).remove(); }
     </script>
 </body>
 </html>
