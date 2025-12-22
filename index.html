@@ -15,9 +15,28 @@
         body { background: var(--light-bg); color: #1b2559; overflow-x: hidden; }
 
         /* GİRİŞ EKRANI */
-        #login-screen { position: fixed; inset: 0; background: var(--dark); z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .login-card { background: #fff; padding: 40px; border-radius: 30px; width: 90%; max-width: 400px; text-align: center; }
+        <!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>yusufhairpalace - Giriş</title>
+</head>
+<body>
+<h2>yusufhairpalace</h2>
+<input type="password" id="pass" placeholder="Şifre">
+<button onclick="login()">Giriş</button>
 
+<script>
+function login(){
+  if(document.getElementById("pass").value==="1234"){
+    window.location="panel.html";
+  } else {
+    alert("Şifre yanlış");
+  }
+}
+</script>
+</body>
+</html>
         /* SIDEBAR */
         .sidebar { width: var(--sidebar-w); height: 100vh; background: #fff; position: fixed; left: 0; top: 0; z-index: 1000; border-right: 1px solid #e9edf7; transition: 0.3s; }
         .nav-link { margin: 4px 20px; padding: 15px 20px; display: flex; align-items: center; gap: 12px; color: #a3aed0; font-weight: 700; border-radius: 12px; cursor: pointer; }
@@ -185,16 +204,78 @@
             }
 
             // Randevu (Haftalık Tablo)
-            for(let i=0; i<=6; i++) document.getElementById('day-'+i).innerHTML = "";
-            const dRand = document.getElementById('dash-rand'); dRand.innerHTML = "";
-            if(data.r) {
-                Object.keys(data.r).forEach(id => {
-                    const x = data.r[id]; const d = new Date(x.t).getDay();
-                    document.getElementById('day-'+d).innerHTML += `<div class="appointment-box"><span>${x.s}</span><br>${x.ad}<button onclick="del('r','${id}')" class="float-right text-orange-400">x</button></div>`;
-                    dRand.innerHTML += `<div class="text-[11px] font-bold p-1 border-b border-white/5">${x.ad} - ${x.s}</div>`;
-                });
-            }
+            <!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Panel</title>
+</head>
+<body>
 
+<h2>Personel Ekle</h2>
+<input id="pname" placeholder="Personel Adı">
+<input id="pskill" placeholder="Uzmanlık">
+<button onclick="addPerson()">Ekle</button>
+<ul id="plist"></ul>
+
+<hr>
+
+<h2>Randevu Ekle</h2>
+<input id="cname" placeholder="Müşteri Adı">
+<input id="phone" placeholder="Telefon">
+<input type="date" id="date">
+<input type="time" id="time">
+<select id="personel"></select>
+<input id="job" placeholder="İşlem">
+<button onclick="addApp()">Kaydet</button>
+
+<ul id="alist"></ul>
+
+<script>
+let persons = JSON.parse(localStorage.getItem("persons"))||[];
+let apps = JSON.parse(localStorage.getItem("apps"))||[];
+
+function save(){
+  localStorage.setItem("persons",JSON.stringify(persons));
+  localStorage.setItem("apps",JSON.stringify(apps));
+}
+
+function render(){
+  plist.innerHTML="";
+  personel.innerHTML="";
+  persons.forEach((p,i)=>{
+    plist.innerHTML+=`<li>${p.name} - ${p.skill}</li>`;
+    personel.innerHTML+=`<option>${p.name}</option>`;
+  });
+
+  alist.innerHTML="";
+  apps.forEach(a=>{
+    alist.innerHTML+=`<li>${a.name} | ${a.date} ${a.time} | ${a.person}</li>`;
+  });
+}
+
+function addPerson(){
+  persons.push({name:pname.value,skill:pskill.value});
+  save(); render();
+}
+
+function addApp(){
+  apps.push({
+    name:cname.value,
+    phone:phone.value,
+    date:date.value,
+    time:time.value,
+    person:personel.value,
+    job:job.value
+  });
+  save(); render();
+}
+
+render();
+</script>
+
+</body>
+</html>
             // Stok
             const sGrid = document.getElementById('s-grid'); sGrid.innerHTML = "";
             if(data.s) {
